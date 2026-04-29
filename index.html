@@ -86,23 +86,12 @@
         .loaded .nav-view { opacity: 1; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
         
-        /* COMMODITY CARDS - VERTICAL ON MOBILE */
+        /* COMMODITY CARDS */
         .selection-grid-container { width: 100%; overflow: visible; padding-bottom: 40px; }
-        .selection-grid { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 30px; 
-            align-items: center;
-            width: 100%;
-        }
+        .selection-grid { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
         
-        /* GRID ON DESKTOP */
         @media (min-width: 768px) {
-            .selection-grid { 
-                flex-direction: row; 
-                justify-content: center; 
-                flex-wrap: wrap;
-            }
+            .selection-grid { flex-direction: row; justify-content: center; flex-wrap: wrap; }
         }
 
         .selection-card {
@@ -193,7 +182,7 @@
             <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
             <div style="font-weight:900; color:var(--pulp-lime);">PULP PRO</div>
         </div>
-        <div class="menu-item" onclick="showHub()">🏠 Home</div>
+        <div class="menu-item" onclick="showHub(); toggleMenu();">🏠 Home</div>
         <div class="menu-item" onclick="exportHistory()">📊 Export Data</div>
         <div class="menu-item" onclick="clearHistory()" style="color:var(--pulp-red);">⚠️ Clear Logs</div>
     </div>
@@ -275,17 +264,28 @@
         document.getElementById('menu-overlay').classList.toggle('open');
     }
 
-    function showHub() {
+    // Navigation Helper
+    function switchView(targetId) {
+        // Hide ALL views and interfaces first
         document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('fruit-hub').classList.remove('hidden');
         document.getElementById('appInterface').style.display = 'none';
+        
+        // Show specific target
+        if(targetId === 'appInterface') {
+            document.getElementById('appInterface').style.display = 'flex';
+        } else {
+            document.getElementById(targetId).classList.remove('hidden');
+        }
+    }
+
+    function showHub() {
+        switchView('fruit-hub');
         renderFavorites();
     }
 
     function openMiddleHub(fruit) {
         activeFruit = fruit;
-        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('middle-hub').classList.remove('hidden');
+        switchView('middle-hub');
         const title = fruit.charAt(0).toUpperCase() + fruit.slice(1);
         document.getElementById('middleHubTitle').innerText = `${title} Menu`;
         document.getElementById('brandsBtn').innerText = `${title} Brands`;
@@ -293,8 +293,7 @@
 
     function openBrands(fruit) {
         activeFruit = fruit;
-        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('brand-hub').classList.remove('hidden');
+        switchView('brand-hub');
         const grid = document.getElementById('brandGrid');
         
         if (fruit === 'banana') {
@@ -313,8 +312,7 @@
     function openCalc(brand, fruit = activeFruit) {
         activeBrand = brand;
         activeFruit = fruit;
-        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('appInterface').style.display = 'flex';
+        switchView('appInterface');
         document.getElementById('brandName').innerText = brand;
         document.getElementById('commodityLabel').innerText = `${activeFruit.toUpperCase()} AGE CHECKER`;
         document.getElementById('codeIn').value = '';
