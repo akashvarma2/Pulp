@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pulp Pro</title>
     
-    <link rel="apple-touch-icon" id="apple-icon" href="">
-    <link rel="icon" id="favicon" href="">
-
     <style>
         :root {
             --pulp-lime: #a6e22e; 
             --pulp-amber: #ff8c00;
+            --pulp-red: #ff4d4d;
             --bg-black: #000000;
             --glass-card: rgba(30, 30, 32, 0.85);
         }
@@ -31,7 +29,7 @@
             transition: opacity 0.8s ease;
         }
         .splash-logo { width: 100px; border-radius: 20px; animation: heroPulse 2s infinite; }
-        @keyframes heroPulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+        @keyframes heroPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
         /* HEADER */
@@ -49,38 +47,49 @@
         .loaded .app-view { opacity: 1; }
         .hidden { display: none !important; }
 
-        /* BIG BLOCKS */
+        /* BIG BLOCKS (COMMODITIES) */
         .section-title { font-weight: 800; font-size: 1.8rem; margin: 20px 0; }
         .selection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         
         .selection-card {
             position: relative; height: 380px; border-radius: 28px; overflow: hidden;
             cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: #111;
+            transition: transform 0.3s ease;
         }
+        .selection-card:hover { transform: translateY(-5px); border-color: var(--pulp-lime); }
         .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
         .card-overlay { 
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 60%);
             z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
         }
-        .card-tag { font-size: 0.7rem; font-weight: 900; color: var(--pulp-amber); text-transform: uppercase; }
+        .card-tag { font-size: 0.7rem; font-weight: 900; color: var(--pulp-amber); text-transform: uppercase; letter-spacing: 2px; }
 
-        /* BRAND & CALCULATOR */
-        .brand-btn { background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; text-align: center; font-weight: 900; cursor: pointer; margin-bottom: 10px; }
-        .btn-main { background: var(--pulp-lime); color: #000; border: none; padding: 20px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; }
-        .input-box { background: rgba(255,255,255,0.05); border: 2px solid var(--pulp-lime); padding: 15px; border-radius: 20px; margin: 20px 0; font-size: 3rem; color: #fff; text-align: center; width: 100%; outline: none; }
+        /* BRAND LIST */
+        .brand-btn { background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; text-align: center; font-weight: 900; cursor: pointer; margin-bottom: 10px; font-size: 1.2rem; }
+        .brand-btn:hover { border-color: var(--pulp-lime); color: var(--pulp-lime); }
+
+        /* CALCULATOR & RESULTS */
+        .calc-card { background: var(--glass-card); padding: 2.5rem; border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .input-box { background: rgba(255,255,255,0.05); border: 2px solid var(--pulp-lime); padding: 15px; border-radius: 20px; margin: 25px 0; font-size: 3.5rem; color: #fff; text-align: center; width: 100%; outline: none; font-weight: 900; letter-spacing: 10px; }
+        .btn-main { background: var(--pulp-lime); color: #000; border: none; padding: 20px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 1rem; }
+        
+        .res-display { margin-top: 25px; padding: 20px; border-radius: 25px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); }
+        .days-val { font-size: 4.5rem; font-weight: 900; line-height: 1; }
+        .status-perfect { color: var(--pulp-lime); border-color: var(--pulp-lime); }
+        .status-old { color: var(--pulp-red); border-color: var(--pulp-red); }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <img src="" id="splash-logo" class="splash-logo">
+        <img src="edited-image.png" class="splash-logo">
         <div style="margin-top:20px; font-weight:900; letter-spacing:5px; color:var(--pulp-lime);">PULP PRO</div>
     </div>
 
     <div class="header-main">
         <div class="logo-group">
-            <img src="" id="nav-logo" alt="Logo">
+            <img src="edited-image.png" alt="Logo">
             <span>Pulp Pro <span class="hub-label">Hub</span></span>
         </div>
         <div style="font-size:1.5rem; cursor:pointer;">☰</div>
@@ -90,15 +99,15 @@
         <div class="section-title">Select Commodity</div>
         <div class="selection-grid">
             <div class="selection-card" onclick="openBrands('banana')">
-                <img src="" id="hub-banana" class="card-img">
+                <img src="banana.png" class="card-img" onerror="this.src='https://placehold.co/400x600/111/FFF?text=Banana'">
                 <div class="card-overlay"></div>
             </div>
             <div class="selection-card" onclick="openBrands('mango')">
-                <img src="" id="hub-mango" class="card-img">
+                <img src="mango.png" class="card-img" onerror="this.src='https://placehold.co/400x600/111/FFF?text=Mango'">
                 <div class="card-overlay"><span class="card-tag">Soon</span></div>
             </div>
             <div class="selection-card" onclick="openBrands('avocado')">
-                <img src="" id="hub-avocado" class="card-img">
+                <img src="avocado.png" class="card-img" onerror="this.src='https://placehold.co/400x600/111/FFF?text=Avocado'">
                 <div class="card-overlay"><span class="card-tag">Soon</span></div>
             </div>
         </div>
@@ -107,41 +116,31 @@
     <div id="view-brands" class="app-view hidden">
         <div class="section-title" id="brand-title">BRANDS</div>
         <div id="brand-list"></div>
-        <button onclick="showHub()" style="background:none; border:none; color:#555; width:100%; margin-top:20px;">← Back to Hub</button>
+        <button onclick="showHub()" style="background:none; border:none; color:#555; width:100%; margin-top:30px; cursor:pointer;">← Back to Hub</button>
     </div>
 
     <div id="view-calc" class="app-view hidden">
-        <div style="text-align:center;">
-            <div id="active-brand" style="color:var(--pulp-lime); font-weight:900; font-size:2rem;">BRAND</div>
-            <div id="active-fruit" style="opacity:0.5; font-weight:700;">FRUIT CHECKER</div>
+        <div class="calc-card">
+            <div id="active-brand" style="color:var(--pulp-lime); font-weight:900; font-size:2rem;">CHIQUITA</div>
+            <div id="active-fruit" style="opacity:0.5; font-weight:700; letter-spacing:2px; font-size:0.8rem;">BANANA CHECKER</div>
+            
             <input type="text" class="input-box" id="codeIn" placeholder="---" maxlength="3">
-            <button class="btn-main" onclick="alert('Result Loaded')">Calculate</button>
-            <button onclick="showBrands()" style="background:none; border:none; color:#555; width:100%; margin-top:20px;">← Back to Brands</button>
+            <button class="btn-main" onclick="calculateAge()">Calculate</button>
+
+            <div id="resBox" class="res-display hidden">
+                <div id="statusLabel" style="font-weight:900; letter-spacing:2px;">READY</div>
+                <div id="daysValue" class="days-val">--</div>
+                <div style="font-size:0.7rem; opacity:0.4; font-weight:800;">DAYS FROM HARVEST</div>
+            </div>
+
+            <button onclick="openBrands(currentFruit)" style="background:none; border:none; color:#555; width:100%; margin-top:30px; cursor:pointer;">← Back to Brands</button>
         </div>
     </div>
 
 <script>
-    // 1. UPDATE YOUR GITHUB INFO HERE
-    const GITHUB_USER = "YOUR_USERNAME";
-    const GITHUB_REPO = "YOUR_REPO";
-
-    const getRaw = (f) => `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${f}`;
-
     let currentFruit = '';
 
     window.onload = () => {
-        // Set All GitHub Assets
-        const logo = getRaw('edited-image.png');
-        document.getElementById('splash-logo').src = logo;
-        document.getElementById('nav-logo').src = logo;
-        document.getElementById('apple-icon').href = logo;
-        document.getElementById('favicon').href = logo;
-
-        document.getElementById('hub-banana').src = getRaw('banana.png');
-        document.getElementById('hub-mango').src = getRaw('mango.png');
-        document.getElementById('hub-avocado').src = getRaw('avocado.png');
-
-        // Delay Splash
         setTimeout(() => { document.body.classList.add('loaded'); }, 2000);
     };
 
@@ -159,7 +158,7 @@
         const list = document.getElementById('brand-list');
         list.innerHTML = fruit === 'banana' ? 
             `<div class="brand-btn" onclick="openCalc('Chiquita')">CHIQUITA</div>` :
-            `<div style="opacity:0.3; text-align:center;">No brands added for ${fruit}</div>`;
+            `<div style="opacity:0.3; text-align:center; padding:40px;">Coming Soon</div>`;
     }
 
     function openCalc(brand) {
@@ -167,9 +166,38 @@
         document.getElementById('view-calc').classList.remove('hidden');
         document.getElementById('active-brand').innerText = brand.toUpperCase();
         document.getElementById('active-fruit').innerText = currentFruit.toUpperCase() + " CHECKER";
+        document.getElementById('codeIn').value = '';
+        document.getElementById('resBox').classList.add('hidden');
     }
 
-    function showBrands() { openBrands(currentFruit); }
+    function calculateAge() {
+        const val = document.getElementById('codeIn').value.toUpperCase();
+        if (val.length < 3) return;
+
+        const m = val.charCodeAt(0) - 65;
+        let d = val.charCodeAt(1) - 64;
+        const yDigit = val.charAt(2);
+        if (yDigit === '2') d += 26;
+
+        const now = new Date();
+        let hDate = new Date(now.getFullYear(), m, d);
+        if (hDate > now) hDate.setFullYear(now.getFullYear() - 1);
+        
+        const diff = Math.floor((now - hDate) / (1000 * 60 * 60 * 24));
+        
+        const resBox = document.getElementById('resBox');
+        const status = document.getElementById('statusLabel');
+        resBox.classList.remove('hidden');
+        document.getElementById('daysValue').innerText = diff;
+
+        if (diff > 31) {
+            status.innerText = "TOO OLD";
+            resBox.className = "res-display status-old";
+        } else {
+            status.innerText = "PERFECT";
+            resBox.className = "res-display status-perfect";
+        }
+    }
 </script>
 </body>
 </html>
