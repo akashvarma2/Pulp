@@ -5,162 +5,346 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pulp Pro</title>
     
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="edited-image.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --pulp-lime: #a6e22e; 
+            --pulp-amber: #ff8c00;
+            --pulp-red: #ff4d4d;
             --bg-black: #000000;
-            --glass: rgba(30, 30, 32, 0.9);
+            --drawer-bg: rgba(18, 18, 18, 0.98);
+            --glass-card: rgba(22, 22, 24, 0.98);
         }
 
         body { 
-            background: var(--bg-black);
-            color: #fff;
-            font-family: -apple-system, system-ui, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            background-color: var(--bg-black);
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100vh; margin: 0; color: #fff; overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* SPLASH SCREEN - CENTERED FOR MOBILE */
-        #splash {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: #000; z-index: 9999;
+        /* SPLASH SCREEN */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-black); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s;
+            transition: opacity 1s ease-in-out, visibility 1s;
         }
-        .splash-img { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; }
-        .splash-title { margin-top: 15px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; }
+        .splash-logo { width: 60vw; max-width: 300px; animation: heroFade 2.6s ease-in-out forwards; }
+        .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
 
-        /* HEADER */
-        header {
-            padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #222;
+        @keyframes heroFade {
+            0% { transform: scale(0.8); opacity: 0; filter: blur(15px); }
+            35% { transform: scale(1); opacity: 1; filter: blur(0px); }
+            75% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.05); opacity: 0; filter: blur(10px); }
         }
-        .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-box img { height: 30px; border-radius: 5px; }
+        @keyframes textFade {
+            0% { transform: translateY(10px); opacity: 0; }
+            35% { transform: translateY(0); opacity: 1; }
+            75% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
-        /* VIEW CONTAINER */
-        .container { padding: 20px; flex: 1; }
+        /* MENU TRIGGER */
+        #menu-trigger {
+            position: fixed; top: 20px; left: 20px; width: 44px; height: 44px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; z-index: 9900;
+            display: flex; align-items: center; justify-content: center; opacity: 0;
+            transition: all 0.5s ease 2.6s;
+        }
+        .loaded #menu-trigger { opacity: 1; }
+        #menu-trigger span, #menu-trigger span::before, #menu-trigger span::after {
+            content: ''; display: block; width: 20px; height: 2px; background: #fff; position: absolute;
+        }
+        #menu-trigger span::before { top: -6px; }
+        #menu-trigger span::after { bottom: -6px; }
+
+        /* SIDE MENU */
+        #menu-drawer {
+            position: fixed; top: 0; left: -100%; width: 280px; height: 100%;
+            background: var(--drawer-bg); z-index: 9995;
+            box-shadow: 20px 0 60px rgba(0,0,0,0.8);
+            transition: left 0.4s cubic-bezier(0.15, 1, 0.3, 1);
+            padding: 30px; display: flex; flex-direction: column;
+            backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        #menu-drawer.open { left: 0; }
+        #menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9994; display: none; }
+        #menu-overlay.open { display: block; }
+        .menu-item { padding: 15px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* NAV VIEWS */
+        .nav-view {
+            max-width: 500px; width: 100%; text-align: center;
+            opacity: 0; transition: 0.5s; margin-top: 60px;
+        }
+        .loaded .nav-view { opacity: 1; }
+        .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
+        
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .selection-card {
+            background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px 15px; border-radius: 35px; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .selection-card:hover { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); }
+        .selection-card img { width: 55px; height: 55px; object-fit: contain; margin-bottom: 15px; }
+        .selection-card span { display: block; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+        .tag-soon { display: block; font-size: 0.55rem; color: var(--pulp-amber); margin-top: 6px; letter-spacing: 2px; }
+
+        /* m.X (BRAND LIST) */
+        .brand-list { display: flex; flex-direction: column; gap: 15px; }
+        .brand-btn {
+            background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
+            padding: 22px; border-radius: 20px; cursor: pointer; transition: 0.3s;
+            font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
+            color: #fff; text-align: center;
+        }
+        .brand-btn:hover { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
+
+        /* CALCULATOR m.X.X */
+        .app-container {
+            display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 380px; margin-top: 60px;
+        }
+        @media (min-width: 992px) {
+            .app-container { flex-direction: row; max-width: 950px; }
+            .history-section { flex: 1; margin-top: 0 !important; background: var(--glass-card); padding: 2rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); max-height: 700px; overflow-y: auto; }
+        }
+        .app-card {
+            background: var(--glass-card); padding: 2.5rem 1.5rem; 
+            border-radius: 50px; text-align: center; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 40px 100px rgba(0,0,0,1); backdrop-filter: blur(30px);
+        }
+
+        .input-wrapper { background: rgba(255,255,255,0.03); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 15px; margin-bottom: 20px; }
+        input { border: none !important; text-align: center; letter-spacing: 8px; font-weight: 900; font-size: 3rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
+        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 15px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; }
+        
+        .result-display { margin-top: 25px; padding: 20px; border-radius: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); }
+        .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
+        .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
+        .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
+        #daysValue { font-size: 5rem; font-weight: 900; line-height: 1; }
+
+        .history-section { margin-top: 30px; text-align: left; display: none; }
+        .log-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .log-code { font-weight: 900; font-family: monospace; }
+        .log-timestamp { display: block; opacity: 0.4; font-size: 0.55rem; font-weight: 800; }
+
         .hidden { display: none !important; }
-
-        /* COMMODITY BLOCKS */
-        .grid { display: flex; flex-direction: column; gap: 15px; }
-        .card {
-            position: relative; height: 180px; border-radius: 20px;
-            overflow: hidden; border: 1px solid #333;
-        }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        .overlay {
-            position: absolute; bottom:0; left:0; width:100%; height:100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            display: flex; align-items: flex-end; padding: 20px;
-        }
-
-        /* CALC BOX */
-        .calc-ui { background: var(--glass); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid #333; }
-        input { 
-            background: #111; border: 2px solid var(--pulp-lime); border-radius: 15px;
-            color: #fff; font-size: 3rem; width: 100%; text-align: center; 
-            margin: 20px 0; font-weight: 900; outline: none;
-        }
-        .main-btn { 
-            background: var(--pulp-lime); color: #000; border: none; 
-            width: 100%; padding: 18px; border-radius: 50px; font-weight: 900;
-            text-transform: uppercase; cursor: pointer;
-        }
-
-        /* RESULTS BOX */
-        .result-box { margin-top: 20px; padding: 20px; border-radius: 20px; background: #111; }
-        .days-big { font-size: 4rem; font-weight: 900; color: var(--pulp-lime); }
+        .shake { animation: shake 0.4s both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
-<body class="loading">
+<body>
 
-    <div id="splash">
-        <img src="edited-image.png" class="splash-img" onerror="this.src='https://placehold.co/100x100/a6e22e/000?text=P'">
-        <div class="splash-title">Pulp Pro</div>
+    <div id="splash-screen">
+        <img src="edited-image.png" class="splash-logo">
+        <div class="splash-text">PULP PRO</div>
     </div>
 
-    <header>
-        <div class="logo-box">
-            <img src="edited-image.png" onerror="this.style.display='none'">
-            <span style="font-weight: 900;">Pulp Pro</span>
-        </div>
-        <div onclick="location.reload()" style="font-size: 1.2rem;">🏠</div>
-    </header>
+    <div id="menu-trigger" onclick="toggleMenu()"><span></span></div>
 
-    <div class="container">
-        <div id="menu">
-            <h2 style="font-weight: 800;">Select Commodity</h2>
-            <div class="grid">
-                <div class="card" onclick="goCalc('Banana')">
-                    <img src="banana.png" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Banana'">
-                    <div class="overlay"><span style="font-weight: 800; font-size: 1.4rem;">Banana</span></div>
-                </div>
-                <div class="card" onclick="goCalc('Mango')">
-                    <img src="mango.png" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Mango'">
-                    <div class="overlay"><span style="font-weight: 800; font-size: 1.4rem;">Mango (Soon)</span></div>
-                </div>
+    <div id="menu-drawer">
+        <div style="text-align:center; margin-bottom:40px;">
+            <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
+            <div style="font-weight:900; color:var(--pulp-lime);">PULP PRO</div>
+        </div>
+        <div class="menu-item" onclick="showHub()">🏠 Home</div>
+        <div class="menu-item" onclick="exportHistory()">📊 Export Data</div>
+        <div class="menu-item" onclick="clearHistory()" style="color:var(--pulp-red);">⚠️ Clear Logs</div>
+    </div>
+    <div id="menu-overlay" onclick="toggleMenu()"></div>
+
+    <div id="fruit-hub" class="nav-view">
+        <div class="hub-title">Select Commodity</div>
+        <div class="selection-grid">
+            <div class="selection-card" onclick="openBrands('banana')">
+                <img src="https://img.icons8.com/fluency/96/banana.png" alt="banana">
+                <span>Banana</span>
+            </div>
+            <div class="selection-card" onclick="openBrands('mango')">
+                <img src="https://img.icons8.com/fluency/96/mango.png" alt="mango">
+                <span>Mango</span>
+                <span class="tag-soon">(SOON)</span>
+            </div>
+            <div class="selection-card" onclick="openBrands('avocado')">
+                <img src="https://img.icons8.com/fluency/96/avocado.png" alt="avocado">
+                <span>Avocado</span>
+                <span class="tag-soon">(SOON)</span>
             </div>
         </div>
+    </div>
 
-        <div id="calc" class="hidden">
-            <div class="calc-ui">
-                <h3 id="fruit-name" style="color: var(--pulp-lime); margin: 0;">FRUIT</h3>
-                <input type="text" id="codeIn" maxlength="3" placeholder="---">
-                <button class="main-btn" onclick="calculate()">Calculate</button>
-                
-                <div id="result" class="result-box hidden">
-                    <div style="font-size: 0.8rem; opacity: 0.5; font-weight: 800;">AGE DETECTED</div>
-                    <div id="daysOut" class="days-big">0</div>
-                    <div style="font-size: 0.7rem; font-weight: 700;">DAYS FROM HARVEST</div>
-                </div>
+    <div id="brand-hub" class="nav-view hidden">
+        <div class="hub-title" id="brandHubTitle">Select Brand</div>
+        <div class="brand-list" id="brandGrid"></div>
+        <button class="btn-main" style="margin-top:40px; background:transparent; border:1px solid rgba(255,255,255,0.2);" onclick="showHub()">← Back</button>
+    </div>
 
-                <button onclick="goMenu()" style="background:none; border:none; color:#555; margin-top:25px; width:100%;">← Back</button>
+    <div class="app-container" id="appInterface">
+        <div class="app-card" id="appCard">
+            <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
+            <div id="brandName" style="font-size: 1.4rem; font-weight: 900; color: var(--pulp-lime); text-transform: uppercase;">Chiquita</div>
+            <div id="commodityLabel" style="font-weight: 900; letter-spacing: 4px; opacity: 0.5; font-size: 0.7rem; margin-bottom: 25px;">BANANA AGE CHECKER</div>
+            
+            <div class="input-wrapper">
+                <input type="text" id="codeIn" placeholder="---" maxlength="3" autofocus>
             </div>
+            
+            <button onclick="checkFruit()" class="btn-main">Calculate</button>
+
+            <div id="resBox" class="result-display">
+                <div id="statusLabel" style="font-weight:900;">READY</div>
+                <div id="daysValue">--</div>
+                <div style="font-size: 0.7rem; opacity: 0.4; font-weight: 800; text-transform: uppercase;">Days from Harvest</div>
+                <div id="dateText" style="font-size: 1.3rem; font-weight: 900; margin-top: 10px;">-- -- ----</div>
+            </div>
+
+            <button class="btn-main" style="margin-top:25px; background:transparent; border:none; opacity:0.4; font-size:0.6rem;" onclick="openBrands(activeFruit)">← Back to Brands</button>
+        </div>
+
+        <div id="historySection" class="history-section">
+            <div id="historyList"></div>
         </div>
     </div>
 
 <script>
-    window.onload = () => {
-        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; 
-        setTimeout(() => document.getElementById('splash').classList.add('hidden'), 500); }, 2000);
-    };
+    let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
+    let activeFruit = '';
+    let activeBrand = '';
 
-    function goCalc(name) {
-        document.getElementById('menu').classList.add('hidden');
-        document.getElementById('calc').classList.remove('hidden');
-        document.getElementById('fruit-name').innerText = name.toUpperCase() + " CHECKER";
+    window.addEventListener('load', () => {
+        renderHistory();
+        setTimeout(() => { document.body.classList.add('loaded'); }, 2500);
+    });
+
+    function toggleMenu() {
+        document.getElementById('menu-drawer').classList.toggle('open');
+        document.getElementById('menu-overlay').classList.toggle('open');
+    }
+
+    function showHub() {
+        document.getElementById('fruit-hub').classList.remove('hidden');
+        document.getElementById('brand-hub').classList.add('hidden');
+        document.getElementById('appInterface').style.display = 'none';
+        if(document.getElementById('menu-drawer').classList.contains('open')) toggleMenu();
+    }
+
+    function openBrands(fruit) {
+        activeFruit = fruit;
+        document.getElementById('fruit-hub').classList.add('hidden');
+        document.getElementById('appInterface').style.display = 'none';
+        document.getElementById('brand-hub').classList.remove('hidden');
+        document.getElementById('brandHubTitle').innerText = `${fruit} brands`;
+        
+        const grid = document.getElementById('brandGrid');
+        grid.innerHTML = ''; 
+
+        if (fruit === 'banana') {
+            grid.innerHTML = `
+                <div class="brand-btn" onclick="openCalc('Chiquita')">Chiquita</div>
+                <div class="brand-btn" style="opacity:0.5; cursor:default;">Dole (SOON)</div>
+            `;
+        } else {
+            grid.innerHTML = `<div style="opacity:0.5; padding:20px;">Logic for ${fruit} brands coming soon.</div>`;
+        }
+    }
+
+    function openCalc(brand) {
+        activeBrand = brand;
+        document.getElementById('brand-hub').classList.add('hidden');
+        document.getElementById('appInterface').style.display = 'flex';
+        document.getElementById('brandName').innerText = brand;
+        document.getElementById('commodityLabel').innerText = `${activeFruit.toUpperCase()} AGE CHECKER`;
         document.getElementById('codeIn').value = '';
-        document.getElementById('result').classList.add('hidden');
+        document.getElementById('resBox').className = 'result-display';
+        document.getElementById('daysValue').innerText = '--';
     }
 
-    function goMenu() {
-        document.getElementById('calc').classList.add('hidden');
-        document.getElementById('menu').classList.remove('hidden');
-    }
+    const inputField = document.getElementById('codeIn');
+    inputField.addEventListener('input', () => { if (inputField.value.length === 3) checkFruit(); });
 
-    function calculate() {
-        const val = document.getElementById('codeIn').value.toUpperCase();
+    function checkFruit(historicalCode = null) {
+        const val = historicalCode || inputField.value.toUpperCase();
+        if (historicalCode) inputField.value = historicalCode;
         if (val.length < 3) return;
 
-        // ORIGINAL LOGIC RESTORED
-        const monthCode = val.charCodeAt(0) - 65; 
-        let dayCode = val.charCodeAt(1) - 64; 
-        const yearDigit = val.charAt(2);
-        if (yearDigit === '2') dayCode += 26;
+        const mChar = val.charCodeAt(0);
+        const dChar = val.charCodeAt(1);
+        const yDigit = val.charAt(2);
+        const isValid = (mChar >= 65 && mChar <= 76) && (dChar >= 65 && dChar <= 90) && (yDigit === '1' || yDigit === '2');
+
+        if (!isValid) {
+            document.getElementById('appCard').classList.add('shake');
+            setTimeout(()=>document.getElementById('appCard').classList.remove('shake'), 400);
+            return;
+        }
 
         const now = new Date();
-        let harvest = new Date(now.getFullYear(), monthCode, dayCode);
-        if (harvest > now) harvest.setFullYear(now.getFullYear() - 1);
+        const m = mChar - 65;
+        let d = dChar - 64; if (yDigit === '2') d += 26;
+        let hDate = new Date(now.getFullYear(), m, d);
+        if (hDate > now) hDate.setFullYear(now.getFullYear() - 1);
+        const diff = Math.floor((now - hDate) / (1000*60*60*24));
 
-        const diff = Math.floor((now - harvest) / (1000 * 60 * 60 * 24));
-        
-        document.getElementById('result').classList.remove('hidden');
-        document.getElementById('daysOut').innerText = diff;
+        const box = document.getElementById('resBox');
+        document.getElementById('daysValue').innerText = diff;
+        document.getElementById('dateText').innerText = hDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+
+        let statusColor = "";
+        const label = document.getElementById('statusLabel');
+        if (diff > 31) { label.innerText = "TOO OLD"; box.className = 'result-display bg-old'; statusColor = "#ff4d4d"; }
+        else if (diff <= 21) { label.innerText = "PERFECT"; box.className = 'result-display bg-perfect'; statusColor = "#a6e22e"; }
+        else { label.innerText = "ACCEPTABLE"; box.className = 'result-display bg-acceptable'; statusColor = "#ff8c00"; }
+
+        if (!historicalCode) saveToHistory(val, diff, statusColor);
     }
+
+    function saveToHistory(code, days, color) {
+        const now = new Date();
+        const ts = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} • ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        scanHistory.unshift({ code, days, color, timestamp: ts.toUpperCase(), brand: activeBrand });
+        if (scanHistory.length > 15) scanHistory.pop();
+        localStorage.setItem('pulpProHistory', JSON.stringify(scanHistory));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        const section = document.getElementById('historySection');
+        if (scanHistory.length === 0) { section.style.display = "none"; return; }
+        section.style.display = "block";
+        list.innerHTML = `
+            <div style="font-size:0.75rem; font-weight:900; color:var(--pulp-lime); margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">ARCHIVE</div>
+        ` + scanHistory.map(item => `
+            <div class="log-item" onclick="checkFruit('${item.code}')">
+                <div class="log-code">${item.code} <small style="font-size:0.5rem; opacity:0.4;">${item.brand || ''}</small></div>
+                <div class="log-meta" style="text-align:right;">
+                    <span style="color:${item.color}; font-weight:900;">${item.days}D</span>
+                    <span class="log-timestamp">${item.timestamp}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function exportHistory() {
+        let csv = "Code,Brand,Days,Timestamp\n" + scanHistory.map(i => `${i.code},${i.brand},${i.days},${i.timestamp}`).join("\n");
+        let link = document.createElement("a");
+        link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+        link.download = "pulp_pro_logs.csv";
+        link.click();
+    }
+
+    function clearHistory() { if(confirm("Wipe logs?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); } }
 </script>
 </body>
 </html>
