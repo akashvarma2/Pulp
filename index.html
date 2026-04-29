@@ -83,42 +83,67 @@
         #menu-overlay.open { display: block; }
         .menu-item { padding: 15px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* NAV VIEWS */
+        /* ENHANCED SELECTION HUB */
         .nav-view {
-            max-width: 500px; width: 100%; text-align: center;
+            max-width: 900px; width: 100%; text-align: center;
             opacity: 0; transition: 0.5s; margin-top: 60px;
         }
         .loaded .nav-view { opacity: 1; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
         
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .selection-card {
-            background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
-            padding: 30px 15px; border-radius: 35px; cursor: pointer; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* SCROLLABLE GRID LOGIC */
+        .selection-grid-container {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--pulp-lime) transparent;
         }
-        .selection-card:hover { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); }
-        .selection-card img { width: 55px; height: 55px; object-fit: contain; margin-bottom: 15px; }
-        .selection-card span { display: block; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
-        .tag-soon { display: block; font-size: 0.55rem; color: var(--pulp-amber); margin-top: 6px; letter-spacing: 2px; }
+        .selection-grid-container::-webkit-scrollbar { height: 6px; }
+        .selection-grid-container::-webkit-scrollbar-thumb { background: var(--pulp-lime); border-radius: 10px; }
+
+        .selection-grid { 
+            display: flex; 
+            gap: 25px; 
+            padding: 10px;
+            width: max-content;
+            margin: 0 auto;
+        }
+
+        .selection-card {
+            background: var(--glass-card); border: 2px solid rgba(255,255,255,0.1);
+            padding: 50px 30px; border-radius: 45px; cursor: pointer; transition: 0.3s ease;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 240px; /* Bigger width */
+        }
+        .selection-card:hover { 
+            border-color: var(--pulp-lime); 
+            background: rgba(166, 226, 46, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .selection-card img { width: 90px; height: 90px; object-fit: contain; margin-bottom: 25px; }
+        .selection-card span { display: block; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; }
+        .tag-soon { display: block; font-size: 0.6rem; color: var(--pulp-amber); margin-top: 10px; letter-spacing: 2px; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .selection-grid { 
+                flex-direction: column; 
+                width: 100%;
+                margin: 0;
+            }
+            .selection-card { width: 100%; padding: 40px; }
+            .selection-grid-container { overflow-x: visible; }
+        }
 
         /* BRAND LIST STYLING */
         .brand-list { display: flex; flex-direction: column; gap: 15px; }
         .brand-btn {
-            background: var(--glass-card); 
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 22px; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            transition: 0.3s;
-            font-weight: 900; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            font-size: 0.9rem;
-            color: #fff; 
-            text-align: center;
-            display: block;
-            width: 100%;
+            background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
+            padding: 22px; border-radius: 20px; cursor: pointer; transition: 0.3s;
+            font-weight: 900; text-transform: uppercase; letter-spacing: 2px; 
+            font-size: 0.9rem; color: #fff; text-align: center; display: block; width: 100%;
         }
         .brand-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
         .brand-btn.disabled { opacity: 0.5; cursor: default; }
@@ -190,21 +215,23 @@
 
     <div id="fruit-hub" class="nav-view">
         <div class="hub-title">Select Commodity</div>
-        <div class="selection-grid">
-            <div class="selection-card" onclick="openBrands('banana')">
-                <img src="https://img.icons8.com/fluency/96/banana.png" alt="banana">
-                <span>Banana</span>
-            </div>
-            <div class="selection-card" onclick="openBrands('mango')">
-                <img src="https://img.icons8.com/fluency/96/mango.png" alt="mango">
-                <span>Mango</span>
-                <span class="tag-soon">(SOON)</span>
-            </div>
-            <div class="selection-card" onclick="openBrands('avocado')">
-                <img src="https://img.icons8.com/fluency/96/avocado.png" alt="avocado">
-                <span>Avocado</span>
-                <span class="tag-soon">(SOON)</span>
-            </div>
+        <div class="selection-grid-container">
+            <div class="selection-grid">
+                <div class="selection-card" onclick="openBrands('banana')">
+                    <img src="banana.png" alt="banana">
+                    <span>Banana</span>
+                </div>
+                <div class="selection-card" onclick="openBrands('mango')">
+                    <img src="mango.png" alt="mango">
+                    <span>Mango</span>
+                    <span class="tag-soon">(SOON)</span>
+                </div>
+                <div class="selection-card" onclick="openBrands('avocado')">
+                    <img src="avocado.png" alt="avocado">
+                    <span>Avocado</span>
+                    <span class="tag-soon">(SOON)</span>
+                </div>
+                </div>
         </div>
     </div>
 
