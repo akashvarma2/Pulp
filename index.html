@@ -73,13 +73,23 @@
             background: var(--drawer-bg); z-index: 9995;
             box-shadow: 20px 0 60px rgba(0,0,0,0.8);
             transition: left 0.4s cubic-bezier(0.15, 1, 0.3, 1);
-            padding: 30px; display: flex; flex-direction: column;
+            padding: 30px 20px; display: flex; flex-direction: column;
             backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.05);
         }
         #menu-drawer.open { left: 0; }
         #menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9994; display: none; }
         #menu-overlay.open { display: block; }
-        .menu-item { padding: 15px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; }
+        
+        .menu-item { padding: 15px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; justify-content: space-between; }
+        .menu-item:hover { color: var(--pulp-lime); }
+        
+        /* FAVORITES DROPDOWN IN MENU */
+        #menu-fav-container { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+        #menu-fav-list { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding-left: 10px; }
+        #menu-fav-list.show { max-height: 400px; overflow-y: auto; }
+        .menu-fav-item { padding: 12px 15px; font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; cursor: pointer; display: block; border-left: 1px solid var(--pulp-lime); margin-bottom: 5px; line-height: 1.2; }
+        .menu-fav-item:hover { color: #fff; background: rgba(166, 226, 46, 0.05); }
+        .menu-fav-item span { display: block; color: var(--pulp-lime); font-size: 0.55rem; opacity: 0.8; margin-top: 2px; }
 
         /* VIEWS */
         .nav-view { max-width: 900px; width: 100%; text-align: center; opacity: 0; transition: 0.5s; margin-top: 80px; }
@@ -120,7 +130,7 @@
         .list-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
         .list-btn.disabled { opacity: 0.4; cursor: default; }
 
-        /* FAVORITES SECTION */
+        /* FAVORITES SECTION (HOME) */
         #favorites-section { margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
         .fav-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px; }
         .fav-card {
@@ -182,9 +192,23 @@
             <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
             <div style="font-weight:900; color:var(--pulp-lime);">PULP PRO</div>
         </div>
-        <div class="menu-item" onclick="showHub(); toggleMenu();">🏠 Home</div>
-        <div class="menu-item" onclick="exportHistory()">📊 Export Data</div>
-        <div class="menu-item" onclick="clearHistory()" style="color:var(--pulp-red);">⚠️ Clear Logs</div>
+        
+        <div class="menu-item" onclick="showHub(); toggleMenu();">
+            <span>🏠 Home</span>
+        </div>
+        
+        <div class="menu-item" onclick="clearHistory()" style="color:var(--pulp-red);">
+            <span>⚠️ Clear Logs</span>
+        </div>
+
+        <div id="menu-fav-container">
+            <div class="menu-item" onclick="toggleMenuFavs()">
+                <span>⭐ Favorites</span>
+                <i class="bi bi-chevron-down" id="favChevron"></i>
+            </div>
+            <div id="menu-fav-list">
+                </div>
+        </div>
     </div>
     <div id="menu-overlay" onclick="toggleMenu()"></div>
 
@@ -264,13 +288,17 @@
         document.getElementById('menu-overlay').classList.toggle('open');
     }
 
-    // Navigation Helper
+    function toggleMenuFavs() {
+        const list = document.getElementById('menu-fav-list');
+        const icon = document.getElementById('favChevron');
+        list.classList.toggle('show');
+        icon.classList.toggle('bi-chevron-up');
+        icon.classList.toggle('bi-chevron-down');
+    }
+
     function switchView(targetId) {
-        // Hide ALL views and interfaces first
         document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('appInterface').style.display = 'none';
-        
-        // Show specific target
         if(targetId === 'appInterface') {
             document.getElementById('appInterface').style.display = 'flex';
         } else {
@@ -295,7 +323,6 @@
         activeFruit = fruit;
         switchView('brand-hub');
         const grid = document.getElementById('brandGrid');
-        
         if (fruit === 'banana') {
             grid.innerHTML = `
                 <div class="list-btn" onclick="openCalc('Chiquita')">Chiquita</div>
@@ -325,10 +352,12 @@
     function toggleFavorite() {
         const id = `${activeFruit}_${activeBrand}`;
         const index = favorites.findIndex(f => f.id === id);
+        // Note: The 'page' here is 'Age Checker' as requested
         if (index > -1) { favorites.splice(index, 1); } 
-        else { favorites.push({ id, fruit: activeFruit, brand: activeBrand }); }
+        else { favorites.push({ id, fruit: activeFruit, brand: activeBrand, page: 'Age Checker' }); }
         localStorage.setItem('pulpProFavorites', JSON.stringify(favorites));
         updateFavoriteUI();
+        renderFavorites();
     }
 
     function updateFavoriteUI() {
@@ -340,13 +369,28 @@
     function renderFavorites() {
         const section = document.getElementById('favorites-section');
         const grid = document.getElementById('fav-grid');
-        if (favorites.length === 0) { section.classList.add('hidden'); return; }
+        const menuList = document.getElementById('menu-fav-list');
+
+        if (favorites.length === 0) { 
+            section.classList.add('hidden'); 
+            menuList.innerHTML = `<div style="padding:10px; font-size:0.6rem; opacity:0.3;">NO SAVED FAVS</div>`;
+            return; 
+        }
+
         section.classList.remove('hidden');
         grid.innerHTML = favorites.map(f => `
             <div class="fav-card" onclick="openCalc('${f.brand}', '${f.fruit}')">
                 <i class="bi bi-star-fill"></i>
                 <span>${f.brand}</span>
                 <small style="opacity:0.5; font-size:0.55rem;">${f.fruit.toUpperCase()}</small>
+            </div>
+        `).join('');
+
+        // Dropdown Menu shows Brand (Page Name)
+        menuList.innerHTML = favorites.map(f => `
+            <div class="menu-fav-item" onclick="openCalc('${f.brand}', '${f.fruit}'); toggleMenu();">
+                ${f.brand}
+                <span>(${f.page || 'Age Checker'})</span>
             </div>
         `).join('');
     }
@@ -398,13 +442,11 @@
     function renderHistory() {
         const list = document.getElementById('historyList'), section = document.getElementById('historySection');
         if (scanHistory.length === 0) { section.style.display = "none"; return; }
-        
         if (window.innerWidth >= 992) {
             section.style.display = "block";
         } else {
             section.style.display = document.getElementById('daysValue').innerText !== '--' ? "block" : "none";
         }
-
         list.innerHTML = `<div style="font-size:0.75rem; font-weight:900; color:var(--pulp-lime); margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">ARCHIVE</div>` + scanHistory.map(item => `
             <div class="log-item" onclick="checkFruit('${item.code}')">
                 <div class="log-code">${item.code} <small style="font-size:0.5rem; opacity:0.4;">${item.brand || ''}</small></div>
@@ -426,14 +468,6 @@
             btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
             setTimeout(() => { btn.classList.remove('success'); btn.innerHTML = `<i class="bi bi-clipboard"></i> **COPY**`; }, 2000);
         });
-    }
-
-    function exportHistory() {
-        let csv = "Code,Brand,Days,Timestamp\n" + scanHistory.map(i => `${i.code},${i.brand},${i.days},${i.timestamp}`).join("\n");
-        let link = document.createElement("a");
-        link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-        link.download = "pulp_pro_logs.csv";
-        link.click();
     }
 
     function clearHistory() { if(confirm("Wipe logs?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); } }
