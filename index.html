@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pulp</title>
+    <title>Pulp Pro</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
@@ -14,89 +14,107 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --perfect-green: #2ecc71;
-            --acceptable-orange: #f39c12;
-            --old-red: #e74c3c;
+            --pulp-lime: #a6e22e; 
+            --pulp-amber: #ff8c00;
+            --pulp-red: #ff4d4d;
             --bg-black: #000000;
-            --card-grey: #1c1c1e;
-            --text-white: #ffffff;
-            --border-grey: #3a3a3c;
+            --glass-panel: rgba(20, 20, 22, 0.9);
+            --glow-strength: 0 0 20px;
         }
 
-        /* 1. SMOOTH OPENING OVERLAY */
+        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-black); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
         }
-
-        #splash-logo {
-            width: 120px; height: 120px;
-            animation: pulseIn 1.2s ease-out forwards;
-        }
-
+        #splash-logo { width: 140px; height: 140px; animation: pulseIn 1.2s ease-out forwards; }
         @keyframes pulseIn {
-            0% { transform: scale(0.85); opacity: 0; filter: blur(10px); }
+            0% { transform: scale(0.8); opacity: 0; filter: blur(10px); }
             100% { transform: scale(1); opacity: 1; filter: blur(0px); }
         }
+        .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
-        .loaded #splash-screen {
-            opacity: 0; visibility: hidden;
-        }
-
-        /* MAIN APP STYLES */
+        /* BODY & LAYOUT */
         body { 
-            background-color: var(--bg-black);
-            font-family: -apple-system, system-ui, sans-serif;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;
-            color: var(--text-white); overflow: hidden;
+            color: #fff; overflow: hidden;
         }
 
         .app-card {
-            background: var(--card-grey);
-            padding: 2.5rem 1.5rem; border-radius: 40px;
+            background: var(--glass-panel);
+            padding: 2rem 1.5rem; border-radius: 40px;
             width: 92%; max-width: 360px; text-align: center;
-            border: 1px solid var(--border-grey);
-            /* Entrance Animation for the card itself */
+            border: 1px solid rgba(166, 226, 46, 0.15);
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5), 0 0 30px rgba(166, 226, 46, 0.05);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             transform: translateY(20px); opacity: 0;
             transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1) 0.2s;
         }
-
         .loaded .app-card { transform: translateY(0); opacity: 1; }
 
-        /* Rest of the Master Code UI */
-        .input-wrapper {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-grey);
-            border-radius: 20px; padding: 15px; margin-bottom: 20px;
+        /* HEADER EMOJI & TITLE */
+        .emoji-header { font-size: 3rem; margin-bottom: 0px; filter: drop-shadow(0 0 8px rgba(166, 226, 46, 0.4)); }
+        .checker-title { 
+            font-weight: 900; letter-spacing: 2px; text-transform: uppercase; 
+            font-size: 0.9rem; color: var(--pulp-lime); margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(166, 226, 46, 0.3);
         }
 
+        /* INPUT SECTION */
+        .input-wrapper {
+            background: rgba(166, 226, 46, 0.03);
+            border: 2px solid rgba(166, 226, 46, 0.2);
+            border-radius: 24px; padding: 15px; margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--pulp-lime);
+            box-shadow: var(--glow-strength) rgba(166, 226, 46, 0.3);
+        }
         input {
             border: none !important; text-align: center; letter-spacing: 8px;
-            font-weight: 900; font-size: 2.8rem !important; background: transparent !important;
-            color: var(--text-white); width: 100%; outline: none; text-transform: uppercase;
+            font-weight: 900; font-size: 3rem !important; background: transparent !important;
+            color: #fff; width: 100%; outline: none; text-transform: uppercase;
         }
 
+        /* BUTTONS */
+        .btn-main {
+            background: linear-gradient(135deg, var(--pulp-amber), #ff5e00);
+            color: #fff; border-radius: 50px; padding: 18px; 
+            font-weight: 800; width: 100%; border: none;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(255, 140, 0, 0.3);
+        }
+        .btn-main:active { transform: scale(0.96); }
+
+        .btn-copy {
+            background: rgba(255,255,255,0.05); color: #fff;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 10px; font-size: 0.75rem; font-weight: 700;
+            margin-top: 15px; display: none; width: 100%; text-transform: uppercase;
+        }
+
+        /* RESULT DISPLAY */
         .result-display {
             margin-top: 25px; padding: 20px; border-radius: 30px;
-            background: rgba(255, 255, 255, 0.03); transition: all 0.4s ease;
-            border: 1px solid var(--border-grey);
+            background: rgba(255, 255, 255, 0.02); transition: all 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        .bg-perfect { background-color: var(--perfect-green) !important; }
-        .bg-acceptable { background-color: var(--acceptable-orange) !important; }
-        .bg-old { background-color: var(--old-red) !important; }
+        .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); box-shadow: var(--glow-strength) rgba(166, 226, 46, 0.2); }
+        .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); box-shadow: var(--glow-strength) rgba(255, 140, 0, 0.2); }
+        .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); box-shadow: var(--glow-strength) rgba(255, 77, 77, 0.2); }
 
         #daysValue { font-size: 5.5rem; font-weight: 900; line-height: 1; }
-        #dateText { display: block; font-size: 1.8rem; font-weight: 900; color: #fff; margin-top: 5px; }
-
-        .btn-main { background: #fff; color: #00; border-radius: 50px; padding: 16px; font-weight: 800; width: 100%; border: none; }
-        .btn-copy { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border-grey); border-radius: 12px; padding: 8px 15px; font-size: 0.75rem; font-weight: 700; margin-top: 15px; display: none; width: 100%; text-transform: uppercase; }
+        #statusLabel { font-weight: 900; letter-spacing: 2px; }
+        .label-sub { font-size: 0.7rem; opacity: 0.6; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
 
         .shake { animation: shake 0.4s both; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
     </style>
@@ -105,40 +123,38 @@
 
     <div id="splash-screen">
         <img src="icon-192.png" id="splash-logo" alt="Pulp">
-        <h1 style="margin-top: 20px; font-weight: 900; letter-spacing: 2px;">PULP</h1>
+        <h2 style="margin-top: 20px; font-weight: 900; letter-spacing: 4px; color: var(--pulp-lime);">PULP PRO</h2>
     </div>
 
 <div class="app-card" id="appCard">
-    <div style="font-size: 3rem; margin-bottom: 5px;">🍌</div>
-    <h2 style="font-weight:900; letter-spacing: -1px; margin-top: 0; opacity: 0.8;">PULP</h2>
+    <div class="emoji-header">🍌</div>
+    <div class="checker-title">Age Checker</div>
     
     <div class="input-wrapper">
-        <input type="text" id="codeIn" placeholder="---" maxlength="3" 
-               inputmode="text" autocapitalize="characters" autofocus autocomplete="off">
+        <input type="text" id="codeIn" placeholder="---" maxlength="3" inputmode="text" autocapitalize="characters" autofocus autocomplete="off">
     </div>
     
-    <button onclick="checkBanana()" class="btn-main">CALCULATE</button>
+    <button onclick="checkBanana()" class="btn-main">Calculate Freshness</button>
 
     <div id="resBox" class="result-display">
-        <div id="statusLabel" style="font-weight:900;">READY</div>
+        <div id="statusLabel">READY</div>
         <div id="daysValue">--</div>
-        <div style="font-size: 0.75rem; font-weight:800;">DAYS FROM HARVEST</div>
+        <div class="label-sub">Days from Harvest</div>
         
-        <div style="margin-top:15px; padding-top:15px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <span style="font-size:0.75rem; font-weight:800; opacity:0.6;">HARVEST DATE</span>
-            <span id="dateText">-- -- ----</span>
+        <div style="margin-top:15px; padding-top:15px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div class="label-sub">Estimated Harvest Date</div>
+            <span id="dateText" style="font-size: 1.4rem; font-weight: 900;">-- -- ----</span>
         </div>
 
         <button id="copyBtn" onclick="copyToClipboard()" class="btn-copy">Copy to Email</button>
     </div>
+
+    <img src="icon-192.png" style="width: 30px; height: 30px; margin-top: 20px; opacity: 0.5; filter: grayscale(1);">
 </div>
 
 <script>
-    // 2. TRIGGER THE SMOOTH OPENING
     window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.body.classList.add('loaded');
-        }, 1000); // 1 second delay to let the splash settle
+        setTimeout(() => { document.body.classList.add('loaded'); }, 1000);
     });
 
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
@@ -192,11 +208,11 @@
     }
 
     function copyToClipboard() {
-        const text = `Code: ${inputField.value.toUpperCase()}\nAge: ${daysVal.innerText}\nHarvest date: ${dateText.innerText}`;
+        const text = `Code: ${inputField.value.toUpperCase()}\nAge: ${document.getElementById('daysValue').innerText}\nHarvest: ${document.getElementById('dateText').innerText}`;
         navigator.clipboard.writeText(text).then(() => {
-            const oldText = copyBtn.innerText;
+            const old = copyBtn.innerText;
             copyBtn.innerText = "COPIED!";
-            setTimeout(() => { copyBtn.innerText = oldText; }, 2000);
+            setTimeout(() => { copyBtn.innerText = old; }, 2000);
         });
     }
 
