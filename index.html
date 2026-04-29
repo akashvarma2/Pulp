@@ -8,173 +8,158 @@
     <style>
         :root {
             --pulp-lime: #a6e22e; 
-            --pulp-amber: #ff8c00;
             --bg-black: #000000;
-            --glass-card: rgba(30, 30, 32, 0.9);
+            --glass: rgba(30, 30, 32, 0.9);
         }
 
         body { 
-            background-color: var(--bg-black);
-            background-image: radial-gradient(circle at top right, #1a1a1a, #000);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
+            background: var(--bg-black);
+            color: #fff;
+            font-family: -apple-system, system-ui, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* SPLASH SCREEN - MOBILE FIX */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        /* SPLASH SCREEN - CENTERED FOR MOBILE */
+        #splash {
+            position: fixed; top:0; left:0; width:100%; height:100%;
             background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s;
+            transition: opacity 0.5s;
         }
-        .splash-content { text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .splash-logo { 
-            width: 120px; height: 120px; border-radius: 25px; 
-            object-fit: cover; margin-bottom: 20px;
-            box-shadow: 0 0 40px rgba(166, 226, 46, 0.15);
-        }
-        .splash-name { font-weight: 900; letter-spacing: 5px; color: #fff; text-transform: uppercase; font-size: 1.4rem; }
-
-        .loaded #splash-screen { opacity: 0; visibility: hidden; }
+        .splash-img { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; }
+        .splash-title { margin-top: 15px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; }
 
         /* HEADER */
-        .header-main {
+        header {
+            padding: 15px 20px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5);
+            border-bottom: 1px solid #222;
         }
-        .logo-group { display: flex; align-items: center; gap: 10px; }
-        .logo-group img { height: 30px; border-radius: 5px; }
-        .logo-group span { font-weight: 900; font-size: 1.2rem; }
+        .logo-box { display: flex; align-items: center; gap: 10px; }
+        .logo-box img { height: 30px; border-radius: 5px; }
 
-        /* NAVIGATION VIEWS */
-        .app-view { padding: 20px; max-width: 600px; margin: 0 auto; opacity: 0; transition: 0.4s; }
-        .loaded .app-view { opacity: 1; }
+        /* VIEW CONTAINER */
+        .container { padding: 20px; flex: 1; }
         .hidden { display: none !important; }
 
-        /* BIG BLOCKS (COMMODITY) */
-        .section-title { font-weight: 800; font-size: 1.5rem; margin-bottom: 20px; }
-        .selection-grid { display: flex; flex-direction: column; gap: 20px; }
-        
-        .selection-card {
-            position: relative; height: 200px; border-radius: 20px; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1); background: #111;
+        /* COMMODITY BLOCKS */
+        .grid { display: flex; flex-direction: column; gap: 15px; }
+        .card {
+            position: relative; height: 180px; border-radius: 20px;
+            overflow: hidden; border: 1px solid #333;
         }
-        .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-        .card-overlay { 
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 70%);
-            z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .overlay {
+            position: absolute; bottom:0; left:0; width:100%; height:100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            display: flex; align-items: flex-end; padding: 20px;
         }
-        .card-title { font-weight: 800; font-size: 1.3rem; margin: 0; }
 
-        /* CALCULATOR & HISTORY */
-        .calc-card { background: var(--glass-card); padding: 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        .input-box { background: rgba(0,0,0,0.3); border: 2px solid var(--pulp-lime); padding: 15px; border-radius: 15px; margin: 20px 0; font-size: 2.5rem; color: #fff; text-align: center; width: 80%; outline: none; font-weight: 900; }
-        .btn-main { background: var(--pulp-lime); color: #000; border: none; padding: 15px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; font-size: 1rem; }
-        
-        .history-box { margin-top: 30px; text-align: left; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; font-size: 0.8rem; max-height: 200px; overflow-y: auto; }
-        .history-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; display: flex; justify-content: space-between; }
+        /* CALC BOX */
+        .calc-ui { background: var(--glass); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid #333; }
+        input { 
+            background: #111; border: 2px solid var(--pulp-lime); border-radius: 15px;
+            color: #fff; font-size: 3rem; width: 100%; text-align: center; 
+            margin: 20px 0; font-weight: 900; outline: none;
+        }
+        .main-btn { 
+            background: var(--pulp-lime); color: #000; border: none; 
+            width: 100%; padding: 18px; border-radius: 50px; font-weight: 900;
+            text-transform: uppercase; cursor: pointer;
+        }
+
+        /* RESULTS BOX */
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 20px; background: #111; }
+        .days-big { font-size: 4rem; font-weight: 900; color: var(--pulp-lime); }
     </style>
 </head>
-<body>
+<body class="loading">
 
-    <div id="splash-screen">
-        <div class="splash-content">
-            <img src="./edited-image.png" class="splash-logo" onerror="this.src='https://placehold.co/150x150/a6e22e/000?text=P'">
-            <div class="splash-name">Pulp Pro</div>
+    <div id="splash">
+        <img src="edited-image.png" class="splash-img" onerror="this.src='https://placehold.co/100x100/a6e22e/000?text=P'">
+        <div class="splash-title">Pulp Pro</div>
+    </div>
+
+    <header>
+        <div class="logo-box">
+            <img src="edited-image.png" onerror="this.style.display='none'">
+            <span style="font-weight: 900;">Pulp Pro</span>
         </div>
-    </div>
+        <div onclick="location.reload()" style="font-size: 1.2rem;">🏠</div>
+    </header>
 
-    <div class="header-main">
-        <div class="logo-group">
-            <img src="./edited-image.png" onerror="this.src='https://placehold.co/50x50/a6e22e/000?text=P'">
-            <span>Pulp Pro</span>
-        </div>
-        <div onclick="showHub()" style="font-size:1.5rem; cursor:pointer;">☰</div>
-    </div>
-
-    <div id="view-hub" class="app-view">
-        <div class="section-title">Select Commodity</div>
-        <div class="selection-grid">
-            <div class="selection-card" onclick="openBrands('banana')">
-                <img src="./banana.png" class="card-img" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Banana'">
-                <div class="card-overlay"><p class="card-title">Banana</p></div>
-            </div>
-            <div class="selection-card" onclick="openBrands('mango')">
-                <img src="./mango.png" class="card-img" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Mango'">
-                <div class="card-overlay"><p class="card-title">Mango <small style="color:var(--pulp-amber); font-size:0.6rem;">(SOON)</small></p></div>
+    <div class="container">
+        <div id="menu">
+            <h2 style="font-weight: 800;">Select Commodity</h2>
+            <div class="grid">
+                <div class="card" onclick="goCalc('Banana')">
+                    <img src="banana.png" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Banana'">
+                    <div class="overlay"><span style="font-weight: 800; font-size: 1.4rem;">Banana</span></div>
+                </div>
+                <div class="card" onclick="goCalc('Mango')">
+                    <img src="mango.png" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Mango'">
+                    <div class="overlay"><span style="font-weight: 800; font-size: 1.4rem;">Mango (Soon)</span></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="view-brands" class="app-view hidden">
-        <div class="section-title" id="brand-title">BRANDS</div>
-        <div id="brand-list"></div>
-        <button onclick="showHub()" style="background:none; border:none; color:#555; width:100%; margin-top:20px;">← Back</button>
-    </div>
+        <div id="calc" class="hidden">
+            <div class="calc-ui">
+                <h3 id="fruit-name" style="color: var(--pulp-lime); margin: 0;">FRUIT</h3>
+                <input type="text" id="codeIn" maxlength="3" placeholder="---">
+                <button class="main-btn" onclick="calculate()">Calculate</button>
+                
+                <div id="result" class="result-box hidden">
+                    <div style="font-size: 0.8rem; opacity: 0.5; font-weight: 800;">AGE DETECTED</div>
+                    <div id="daysOut" class="days-big">0</div>
+                    <div style="font-size: 0.7rem; font-weight: 700;">DAYS FROM HARVEST</div>
+                </div>
 
-    <div id="view-calc" class="app-view hidden">
-        <div class="calc-card">
-            <div id="active-brand" style="color:var(--pulp-lime); font-weight:900; font-size:1.5rem;">CHIQUITA</div>
-            <div id="active-fruit" style="opacity:0.5; font-size:0.7rem; letter-spacing:2px;">BANANA CHECKER</div>
-            
-            <input type="text" class="input-box" id="codeIn" placeholder="---" maxlength="3">
-            <button class="btn-main" onclick="runCalculation()">Calculate Age</button>
-
-            <div class="history-box">
-                <div style="font-weight:900; margin-bottom:10px; color:var(--pulp-lime);">RECENT LOGS</div>
-                <div id="log-list"></div>
+                <button onclick="goMenu()" style="background:none; border:none; color:#555; margin-top:25px; width:100%;">← Back</button>
             </div>
-
-            <button onclick="showBrands()" style="background:none; border:none; color:#555; width:100%; margin-top:20px;">← Back to Brands</button>
         </div>
     </div>
 
 <script>
-    let currentFruit = '';
-
     window.onload = () => {
-        setTimeout(() => { document.body.classList.add('loaded'); }, 2000);
+        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; 
+        setTimeout(() => document.getElementById('splash').classList.add('hidden'), 500); }, 2000);
     };
 
-    function showHub() {
-        document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('view-hub').classList.remove('hidden');
+    function goCalc(name) {
+        document.getElementById('menu').classList.add('hidden');
+        document.getElementById('calc').classList.remove('hidden');
+        document.getElementById('fruit-name').innerText = name.toUpperCase() + " CHECKER";
+        document.getElementById('codeIn').value = '';
+        document.getElementById('result').classList.add('hidden');
     }
 
-    function openBrands(fruit) {
-        currentFruit = fruit;
-        document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('view-brands').classList.remove('hidden');
-        document.getElementById('brand-title').innerText = fruit.toUpperCase() + " BRANDS";
-        
-        const list = document.getElementById('brand-list');
-        list.innerHTML = fruit === 'banana' ? 
-            `<div style="background:var(--glass-card); padding:20px; border-radius:15px; font-weight:900; text-align:center; cursor:pointer;" onclick="openCalc('Chiquita')">CHIQUITA</div>` :
-            `<div style="text-align:center; opacity:0.3;">Coming Soon</div>`;
+    function goMenu() {
+        document.getElementById('calc').classList.add('hidden');
+        document.getElementById('menu').classList.remove('hidden');
     }
 
-    function openCalc(brand) {
-        document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('view-calc').classList.remove('hidden');
-        document.getElementById('active-brand').innerText = brand.toUpperCase();
-        document.getElementById('active-fruit').innerText = currentFruit.toUpperCase() + " CHECKER";
-    }
-
-    function showBrands() { openBrands(currentFruit); }
-
-    function runCalculation() {
+    function calculate() {
         const val = document.getElementById('codeIn').value.toUpperCase();
-        if(val.length < 3) return;
+        if (val.length < 3) return;
 
-        // Simple mock calculation for demonstration
-        const logList = document.getElementById('log-list');
-        const newItem = document.createElement('div');
-        newItem.className = 'history-item';
-        newItem.innerHTML = `<span>Code: ${val}</span> <span style="color:var(--pulp-lime)">SUCCESS</span>`;
-        logList.prepend(newItem);
+        // ORIGINAL LOGIC RESTORED
+        const monthCode = val.charCodeAt(0) - 65; 
+        let dayCode = val.charCodeAt(1) - 64; 
+        const yearDigit = val.charAt(2);
+        if (yearDigit === '2') dayCode += 26;
+
+        const now = new Date();
+        let harvest = new Date(now.getFullYear(), monthCode, dayCode);
+        if (harvest > now) harvest.setFullYear(now.getFullYear() - 1);
+
+        const diff = Math.floor((now - harvest) / (1000 * 60 * 60 * 24));
         
-        alert("Calculation complete. Check Recent Logs.");
+        document.getElementById('result').classList.remove('hidden');
+        document.getElementById('daysOut').innerText = diff;
     }
 </script>
 </body>
