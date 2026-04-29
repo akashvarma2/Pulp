@@ -43,7 +43,6 @@
             animation: heroFade 2.6s ease-in-out forwards;
         }
 
-        /* Animated App Name */
         .splash-text {
             margin-top: 20px;
             font-size: 2.5rem;
@@ -86,8 +85,19 @@
         .loaded .app-card { transform: translateY(0); opacity: 1; }
 
         .mini-logo { width: 60px; height: 60px; margin-bottom: 12px; object-fit: contain; }
-        .emoji-header { font-size: 3rem; margin-bottom: 0px; }
-        .checker-title { font-weight: 900; letter-spacing: 4px; color: var(--pulp-lime); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 30px; }
+        
+        /* Updated Chiquita Style */
+        .chiquita-text { 
+            font-size: 1.6rem; 
+            font-weight: 900; 
+            color: var(--pulp-lime); 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(166, 226, 46, 0.3);
+        }
+        
+        .checker-title { font-weight: 900; letter-spacing: 4px; color: #fff; opacity: 0.6; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 30px; }
 
         .input-wrapper {
             background: rgba(255,255,255,0.03);
@@ -135,7 +145,7 @@
 <div class="app-card" id="appCard">
     <img src="edited-image.png" class="mini-logo" alt="Pulp Pro">
     
-    <div class="emoji-header">🍌</div>
+    <div class="chiquita-text">Chiquita Banana</div>
     <div class="checker-title">Age Checker</div>
     
     <div class="input-wrapper">
@@ -154,10 +164,7 @@
 
 <script>
     window.addEventListener('load', () => {
-        // Matches the 2.6s total animation time
-        setTimeout(() => { 
-            document.body.classList.add('loaded'); 
-        }, 2500);
+        setTimeout(() => { document.body.classList.add('loaded'); }, 2500);
     });
 
     const inputField = document.getElementById('codeIn');
