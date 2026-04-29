@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pulp Pro</title>
     
+    <link rel="manifest" href="manifest.json">
+    
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,7 +30,6 @@
             --shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
-        /* High-Contrast Light Theme */
         body.light-theme {
             --bg-black: #f8f9fa;
             --drawer-bg: #ffffff;
@@ -49,7 +50,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999;
@@ -73,7 +73,6 @@
         }
         .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
-        /* MENU TRIGGER */
         #menu-trigger {
             position: fixed; top: 20px; left: 20px; width: 44px; height: 44px;
             background: var(--input-bg); border-radius: 12px; z-index: 9900;
@@ -86,7 +85,6 @@
         #menu-trigger span::before { top: -6px; }
         #menu-trigger span::after { bottom: -6px; }
 
-        /* SIDE MENU */
         #menu-drawer {
             position: fixed; top: 0; left: -100%; width: 280px; height: 100%;
             background: var(--drawer-bg); z-index: 9995;
@@ -103,7 +101,6 @@
         .menu-item:hover { color: var(--pulp-lime); }
         .settings-label { padding: 15px 15px 5px; font-size: 0.6rem; font-weight: 900; color: var(--pulp-lime); opacity: 0.8; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* FAVORITES DROPDOWN */
         #menu-fav-container { margin-top: 20px; border-top: 1px solid var(--border-glass); padding-top: 10px; }
         #menu-fav-list { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding-left: 10px; }
         #menu-fav-list.show { max-height: 400px; overflow-y: auto; }
@@ -111,12 +108,10 @@
         .menu-fav-item:hover { color: var(--text-main); background: rgba(166, 226, 46, 0.1); }
         .menu-fav-item span { display: block; color: var(--pulp-lime); font-size: 0.55rem; opacity: 1; margin-top: 2px; font-weight: 900; }
 
-        /* VIEWS */
         .nav-view { max-width: 900px; width: 100%; text-align: center; opacity: 0; transition: 0.5s; margin-top: 80px; }
         .loaded .nav-view { opacity: 1; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
         
-        /* COMMODITY CARDS */
         .selection-grid-container { width: 100%; overflow: visible; padding-bottom: 40px; }
         .selection-grid { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
         
@@ -140,7 +135,6 @@
         }
         .commodity-name-section span { display: block; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-main); }
 
-        /* LIST BUTTONS */
         .list-container { display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto; }
         .list-btn {
             background: var(--glass-card); border: 1px solid var(--border-glass); padding: 22px; border-radius: 20px; 
@@ -150,7 +144,6 @@
         .list-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
         .list-btn.disabled { opacity: 0.4; cursor: default; }
 
-        /* FAVORITES SECTION (HOME) */
         #favorites-section { margin-top: 50px; padding-top: 30px; border-top: 1px solid var(--border-glass); }
         .fav-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px; }
         .fav-card {
@@ -163,7 +156,6 @@
         .fav-card i { color: var(--pulp-lime); font-size: 1.2rem; margin-bottom: 5px; }
         .fav-card span { font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); }
 
-        /* CALCULATOR */
         .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 40px; }
         
         @media (min-width: 992px) {
@@ -275,13 +267,19 @@
     </div>
 
 <script>
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
+        });
+    }
+
     let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
     let favorites = JSON.parse(localStorage.getItem('pulpProFavorites')) || [];
     let activeFruit = '';
     let activeBrand = '';
 
     window.addEventListener('load', () => {
-        // Enforce Dark Theme as default, only allow light if explicitly saved
         const savedTheme = localStorage.getItem('pulpTheme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-theme');
