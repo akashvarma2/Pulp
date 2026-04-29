@@ -269,7 +269,7 @@
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.worker = navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
         });
     }
 
@@ -395,14 +395,30 @@
         }
     });
 
-    // Helper to hide the Android Keyboard effectively
+    /**
+     * SAMSUNG KEYBOARD FIX (Focus-Trap Method)
+     * Forces the virtual keyboard to close by creating a temporary, 
+     * non-keyboard element to steal focus.
+     */
     function forceHideKeyboard() {
+        // Standard blur
         inputField.blur();
-        // Create temporary focus to body/document to force keyboard down
-        window.focus();
-        if (document.activeElement) {
-            document.activeElement.blur();
-        }
+        
+        // Create an invisible focus trap
+        const trap = document.createElement('input');
+        trap.setAttribute('type', 'text');
+        trap.style.position = 'fixed';
+        trap.style.top = '-100px';
+        trap.setAttribute('readonly', 'readonly'); // Prevents keyboard from opening on trap
+        document.body.appendChild(trap);
+        
+        trap.focus(); // Shift focus away from real input
+        
+        setTimeout(() => {
+            trap.blur();
+            document.body.removeChild(trap);
+            window.scrollTo(0, 0); // Ensure layout doesn't jump
+        }, 50);
     }
 
     function checkFruit(historicalCode = null) {
@@ -417,7 +433,7 @@
             return;
         }
 
-        // Action: Hide keyboard
+        // Action: Hide keyboard (Samsung Fix)
         if (!historicalCode) {
             forceHideKeyboard();
         }
