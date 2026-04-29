@@ -10,104 +10,99 @@
             --pulp-lime: #a6e22e; 
             --pulp-amber: #ff8c00;
             --bg-black: #000000;
-            --glass-card: rgba(30, 30, 32, 0.85);
+            --glass-card: rgba(30, 30, 32, 0.9);
         }
 
         body { 
             background-color: var(--bg-black);
             background-image: radial-gradient(circle at top right, #1a1a1a, #000);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; color: #fff; overflow-x: hidden;
+            margin: 0; color: #fff; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
         }
 
-        /* SPLASH SCREEN - THE "LOGO + NAME" FIX */
+        /* SPLASH SCREEN - MOBILE FIX */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 0.6s ease, visibility 0.6s;
         }
-        .splash-logo-container { text-align: center; }
+        .splash-content { text-align: center; display: flex; flex-direction: column; align-items: center; }
         .splash-logo { 
-            width: 90px; height: 90px; border-radius: 22px; 
-            background: var(--pulp-lime); /* Fallback color if image is missing */
-            object-fit: cover; animation: heroPulse 2s infinite ease-in-out;
-            box-shadow: 0 0 30px rgba(166, 226, 46, 0.2);
+            width: 120px; height: 120px; border-radius: 25px; 
+            object-fit: cover; margin-bottom: 20px;
+            box-shadow: 0 0 40px rgba(166, 226, 46, 0.15);
         }
-        .splash-name { 
-            margin-top: 15px; font-weight: 900; letter-spacing: 6px; 
-            color: #fff; text-transform: uppercase; font-size: 1.2rem;
-        }
-        @keyframes heroPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .splash-name { font-weight: 900; letter-spacing: 5px; color: #fff; text-transform: uppercase; font-size: 1.4rem; }
+
         .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
         /* HEADER */
         .header-main {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5);
         }
-        .logo-group { display: flex; align-items: center; gap: 12px; }
-        .logo-group img { height: 32px; border-radius: 6px; }
-        .logo-group span { font-weight: 900; font-size: 1.3rem; letter-spacing: 1px; }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-group img { height: 30px; border-radius: 5px; }
+        .logo-group span { font-weight: 900; font-size: 1.2rem; }
 
-        /* HUB VIEW */
-        .app-view { padding: 20px; max-width: 900px; margin: 0 auto; opacity: 0; transition: 0.5s; }
+        /* NAVIGATION VIEWS */
+        .app-view { padding: 20px; max-width: 600px; margin: 0 auto; opacity: 0; transition: 0.4s; }
         .loaded .app-view { opacity: 1; }
         .hidden { display: none !important; }
 
-        .section-title { font-weight: 800; font-size: 1.6rem; margin: 20px 0; letter-spacing: -0.5px; }
-        .selection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        /* BIG BLOCKS (COMMODITY) */
+        .section-title { font-weight: 800; font-size: 1.5rem; margin-bottom: 20px; }
+        .selection-grid { display: flex; flex-direction: column; gap: 20px; }
         
         .selection-card {
-            position: relative; height: 380px; border-radius: 28px; overflow: hidden;
-            cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: #111;
+            position: relative; height: 200px; border-radius: 20px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1); background: #111;
         }
         .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
         .card-overlay { 
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%);
-            z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 70%);
+            z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
         }
-        .card-title { font-weight: 800; font-size: 1.2rem; color: #fff; margin: 0; }
+        .card-title { font-weight: 800; font-size: 1.3rem; margin: 0; }
 
-        /* BRANDS & CALC */
-        .brand-btn { background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; text-align: center; font-weight: 900; cursor: pointer; margin-bottom: 12px; }
-        .btn-main { background: var(--pulp-lime); color: #000; border: none; padding: 18px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
-        .input-box { background: rgba(255,255,255,0.05); border: 2px solid var(--pulp-lime); padding: 15px; border-radius: 20px; margin: 20px 0; font-size: 3rem; color: #fff; text-align: center; width: 100%; outline: none; font-weight: 900; }
+        /* CALCULATOR & HISTORY */
+        .calc-card { background: var(--glass-card); padding: 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .input-box { background: rgba(0,0,0,0.3); border: 2px solid var(--pulp-lime); padding: 15px; border-radius: 15px; margin: 20px 0; font-size: 2.5rem; color: #fff; text-align: center; width: 80%; outline: none; font-weight: 900; }
+        .btn-main { background: var(--pulp-lime); color: #000; border: none; padding: 15px; border-radius: 50px; width: 100%; font-weight: 900; text-transform: uppercase; font-size: 1rem; }
+        
+        .history-box { margin-top: 30px; text-align: left; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; font-size: 0.8rem; max-height: 200px; overflow-y: auto; }
+        .history-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo-container">
-            <img src="edited-image.png" class="splash-logo" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
-            <div id="fallback-logo" style="display:none; width:90px; height:90px; background:var(--pulp-lime); border-radius:22px; align-items:center; justify-content:center; font-weight:900; font-size:3rem; color:#000; margin:0 auto;">P</div>
+        <div class="splash-content">
+            <img src="./edited-image.png" class="splash-logo" onerror="this.src='https://placehold.co/150x150/a6e22e/000?text=P'">
             <div class="splash-name">Pulp Pro</div>
         </div>
     </div>
 
     <div class="header-main">
         <div class="logo-group">
-            <img src="edited-image.png" onerror="this.src='https://placehold.co/100x100/a6e22e/000?text=P'">
+            <img src="./edited-image.png" onerror="this.src='https://placehold.co/50x50/a6e22e/000?text=P'">
             <span>Pulp Pro</span>
         </div>
-        <div style="font-size:1.5rem; cursor:pointer;">☰</div>
+        <div onclick="showHub()" style="font-size:1.5rem; cursor:pointer;">☰</div>
     </div>
 
     <div id="view-hub" class="app-view">
         <div class="section-title">Select Commodity</div>
         <div class="selection-grid">
             <div class="selection-card" onclick="openBrands('banana')">
-                <img src="banana.png" class="card-img" onerror="this.src='https://placehold.co/400x600/111/FFF?text=Banana'">
+                <img src="./banana.png" class="card-img" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Banana'">
                 <div class="card-overlay"><p class="card-title">Banana</p></div>
             </div>
             <div class="selection-card" onclick="openBrands('mango')">
-                <img src="mango.png" class="card-img" onerror="this.src='https://placehold.co/400x600/111/FFF?text=Mango'">
+                <img src="./mango.png" class="card-img" onerror="this.src='https://placehold.co/400x200/111/FFF?text=Mango'">
                 <div class="card-overlay"><p class="card-title">Mango <small style="color:var(--pulp-amber); font-size:0.6rem;">(SOON)</small></p></div>
-            </div>
-            <div class="selection-card" onclick="openBrands('avocado')">
-                <img src="avocado.png" class="card-img" onerror="this.src='https://placehold.co/400x600/111/FFF?text=Avocado'">
-                <div class="card-overlay"><p class="card-title">Avocado <small style="color:var(--pulp-amber); font-size:0.6rem;">(SOON)</small></p></div>
             </div>
         </div>
     </div>
@@ -115,16 +110,23 @@
     <div id="view-brands" class="app-view hidden">
         <div class="section-title" id="brand-title">BRANDS</div>
         <div id="brand-list"></div>
-        <button onclick="showHub()" style="background:none; border:none; color:#555; width:100%; margin-top:20px; cursor:pointer;">← Back to Hub</button>
+        <button onclick="showHub()" style="background:none; border:none; color:#555; width:100%; margin-top:20px;">← Back</button>
     </div>
 
     <div id="view-calc" class="app-view hidden">
-        <div style="background:var(--glass-card); padding:2rem; border-radius:40px; text-align:center;">
-            <div id="active-brand" style="color:var(--pulp-lime); font-weight:900; font-size:2rem;">CHIQUITA</div>
-            <div id="active-fruit" style="opacity:0.5; font-weight:700;">FRUIT CHECKER</div>
+        <div class="calc-card">
+            <div id="active-brand" style="color:var(--pulp-lime); font-weight:900; font-size:1.5rem;">CHIQUITA</div>
+            <div id="active-fruit" style="opacity:0.5; font-size:0.7rem; letter-spacing:2px;">BANANA CHECKER</div>
+            
             <input type="text" class="input-box" id="codeIn" placeholder="---" maxlength="3">
-            <button class="btn-main" onclick="alert('Calculating Age...')">Calculate</button>
-            <button onclick="showBrands()" style="background:none; border:none; color:#555; width:100%; margin-top:30px; cursor:pointer;">← Back to Brands</button>
+            <button class="btn-main" onclick="runCalculation()">Calculate Age</button>
+
+            <div class="history-box">
+                <div style="font-weight:900; margin-bottom:10px; color:var(--pulp-lime);">RECENT LOGS</div>
+                <div id="log-list"></div>
+            </div>
+
+            <button onclick="showBrands()" style="background:none; border:none; color:#555; width:100%; margin-top:20px;">← Back to Brands</button>
         </div>
     </div>
 
@@ -132,8 +134,7 @@
     let currentFruit = '';
 
     window.onload = () => {
-        // Keeps splash screen visible for 2.5 seconds for branding impact
-        setTimeout(() => { document.body.classList.add('loaded'); }, 2500);
+        setTimeout(() => { document.body.classList.add('loaded'); }, 2000);
     };
 
     function showHub() {
@@ -149,8 +150,8 @@
         
         const list = document.getElementById('brand-list');
         list.innerHTML = fruit === 'banana' ? 
-            `<div class="brand-btn" onclick="openCalc('Chiquita')">CHIQUITA</div>` :
-            `<div style="opacity:0.3; text-align:center; padding:50px;">No active brands for ${fruit}</div>`;
+            `<div style="background:var(--glass-card); padding:20px; border-radius:15px; font-weight:900; text-align:center; cursor:pointer;" onclick="openCalc('Chiquita')">CHIQUITA</div>` :
+            `<div style="text-align:center; opacity:0.3;">Coming Soon</div>`;
     }
 
     function openCalc(brand) {
@@ -161,6 +162,20 @@
     }
 
     function showBrands() { openBrands(currentFruit); }
+
+    function runCalculation() {
+        const val = document.getElementById('codeIn').value.toUpperCase();
+        if(val.length < 3) return;
+
+        // Simple mock calculation for demonstration
+        const logList = document.getElementById('log-list');
+        const newItem = document.createElement('div');
+        newItem.className = 'history-item';
+        newItem.innerHTML = `<span>Code: ${val}</span> <span style="color:var(--pulp-lime)">SUCCESS</span>`;
+        logList.prepend(newItem);
+        
+        alert("Calculation complete. Check Recent Logs.");
+    }
 </script>
 </body>
 </html>
