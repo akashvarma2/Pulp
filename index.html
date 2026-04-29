@@ -281,9 +281,14 @@
     let activeBrand = '';
 
     window.addEventListener('load', () => {
-        if (localStorage.getItem('pulpTheme') === 'light') {
+        // Enforce Dark Theme as default, only allow light if explicitly saved
+        const savedTheme = localStorage.getItem('pulpTheme');
+        if (savedTheme === 'light') {
             document.body.classList.add('light-theme');
             document.getElementById('themeText').innerText = 'Light Mode';
+        } else {
+            document.body.classList.remove('light-theme');
+            document.getElementById('themeText').innerText = 'Dark Mode';
         }
         renderHistory();
         renderFavorites();
@@ -381,13 +386,11 @@
 
     const inputField = document.getElementById('codeIn');
     
-    // Hide info instantly on typing or deleting
     inputField.addEventListener('input', () => { 
         document.getElementById('resBox').classList.add('hidden');
         renderHistory(); 
     });
 
-    // Handle "Checkmark" or "Enter" from mobile keyboard
     inputField.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
