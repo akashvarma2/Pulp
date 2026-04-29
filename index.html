@@ -31,7 +31,7 @@
             padding: 20px;
         }
 
-        /* SPLASH SCREEN - FIXED LOGO SCALING */
+        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-black); z-index: 9999;
@@ -39,12 +39,8 @@
             transition: opacity 1s ease-in-out, visibility 1s;
         }
         .splash-logo { 
-            width: auto; 
-            height: auto; 
-            max-width: 80%; 
-            max-height: 40vh; 
-            object-fit: contain; 
-            animation: heroFade 2.6s ease-in-out forwards; 
+            width: auto; height: auto; max-width: 80%; max-height: 40vh; 
+            object-fit: contain; animation: heroFade 2.6s ease-in-out forwards; 
         }
         .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
 
@@ -90,7 +86,7 @@
         #menu-overlay.open { display: block; }
         .menu-item { padding: 15px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* ENHANCED SELECTION HUB */
+        /* SELECTION VIEWS */
         .nav-view {
             max-width: 900px; width: 100%; text-align: center;
             opacity: 0; transition: 0.5s; margin-top: 60px;
@@ -98,131 +94,66 @@
         .loaded .nav-view { opacity: 1; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
         
+        /* SELECTION CARDS */
         .selection-grid-container {
-            width: 100%;
-            overflow-x: auto;
-            padding-bottom: 20px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--pulp-lime) transparent;
+            width: 100%; overflow-x: auto; padding-bottom: 20px;
+            scrollbar-width: thin; scrollbar-color: var(--pulp-lime) transparent;
         }
-        .selection-grid-container::-webkit-scrollbar { height: 6px; }
-        .selection-grid-container::-webkit-scrollbar-thumb { background: var(--pulp-lime); border-radius: 10px; }
-
-        .selection-grid { 
-            display: flex; 
-            gap: 25px; 
-            padding: 10px;
-            width: max-content;
-            margin: 0 auto;
-        }
-
+        .selection-grid { display: flex; gap: 25px; padding: 10px; width: max-content; margin: 0 auto; }
         .selection-card {
-            background: var(--glass-card); 
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 45px; 
-            cursor: pointer; 
-            transition: 0.3s ease;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: flex-end; 
-            width: 240px; 
-            height: 320px; 
-            overflow: hidden; 
-            position: relative;
+            background: var(--glass-card); border: 2px solid rgba(255,255,255,0.1); border-radius: 45px; 
+            cursor: pointer; transition: 0.3s ease; display: flex; flex-direction: column; 
+            align-items: center; justify-content: flex-end; width: 240px; height: 320px; 
+            overflow: hidden; position: relative;
         }
-        .selection-card:hover { 
-            border-color: var(--pulp-lime); 
-            background: rgba(166, 226, 46, 0.05);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        
-        .selection-card img { 
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; 
-            height: 80%; 
-            object-fit: cover; 
-            border-radius: 43px 43px 0 0; 
-        }
-        
+        .selection-card:hover { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); transform: translateY(-5px); }
+        .selection-card img { position: absolute; top: 0; left: 0; width: 100%; height: 80%; object-fit: cover; border-radius: 43px 43px 0 0; }
         .commodity-name-section {
-            width: 100%;
-            height: 20%; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(to top, var(--glass-card) 70%, transparent); 
-            z-index: 2; 
-            padding-bottom: 15px;
+            width: 100%; height: 20%; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; background: linear-gradient(to top, var(--glass-card) 70%, transparent); 
+            z-index: 2; padding-bottom: 15px;
         }
-
         .selection-card span { display: block; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; color: #fff; }
         .tag-soon { display: block; font-size: 0.6rem; color: var(--pulp-amber); margin-top: 4px; letter-spacing: 2px; }
 
-        @media (max-width: 600px) {
-            .selection-grid { 
-                flex-direction: column; 
-                width: 100%;
-                margin: 0;
-            }
-            .selection-card { width: 100%; height: 280px; }
-            .selection-grid-container { overflow-x: visible; }
-        }
-
-        /* BRAND LIST STYLING */
-        .brand-list { display: flex; flex-direction: column; gap: 15px; }
-        .brand-btn {
+        /* LIST BUTTONS (MIDDLE HUB & BRANDS) */
+        .list-container { display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto; }
+        .list-btn {
             background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
             padding: 22px; border-radius: 20px; cursor: pointer; transition: 0.3s;
             font-weight: 900; text-transform: uppercase; letter-spacing: 2px; 
             font-size: 0.9rem; color: #fff; text-align: center; display: block; width: 100%;
         }
-        .brand-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
-        .brand-btn.disabled { opacity: 0.5; cursor: default; }
+        .list-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
+        .list-btn.disabled { opacity: 0.5; cursor: default; }
 
-        /* APP CONTAINER */
-        .app-container {
-            display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 60px; margin-bottom: 40px;
+        @media (max-width: 600px) {
+            .selection-grid { flex-direction: column; width: 100%; margin: 0; }
+            .selection-card { width: 100%; height: 280px; }
+            .selection-grid-container { overflow-x: visible; }
         }
 
+        /* APP INTERFACE */
+        .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 60px; margin-bottom: 40px; }
         @media (min-width: 992px) {
             .app-container { flex-direction: row; max-width: 1100px; align-items: flex-start; justify-content: center; }
             .app-card { flex: 0 0 380px; position: sticky; top: 40px; }
             .history-section { flex: 1; margin-top: 0 !important; background: var(--glass-card); padding: 2.5rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; display: block !important; }
         }
-
-        .app-card {
-            background: var(--glass-card); padding: 2.5rem 1.5rem; 
-            border-radius: 50px; text-align: center; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 40px 100px rgba(0,0,0,1); backdrop-filter: blur(30px);
-        }
-
+        .app-card { background: var(--glass-card); padding: 2.5rem 1.5rem; border-radius: 50px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 40px 100px rgba(0,0,0,1); backdrop-filter: blur(30px); }
         .input-wrapper { background: rgba(255,255,255,0.03); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 15px; margin-bottom: 20px; }
         input { border: none !important; text-align: center; letter-spacing: 8px; font-weight: 900; font-size: 3rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
         .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 15px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; }
-        
         .result-display { margin-top: 25px; padding: 25px 20px; border-radius: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); position: relative; }
-        
         .btn-copy { background: rgba(166, 226, 46, 0.1); border: 1px solid var(--pulp-lime); color: var(--pulp-lime); border-radius: 15px; padding: 8px 25px; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-copy:active { transform: scale(0.95); }
-        .btn-copy.success { background: var(--pulp-lime); color: #000; }
-
-        .copy-toast { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--pulp-lime); color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 12px; border-radius: 20px; opacity: 0; transition: 0.3s; pointer-events: none; }
-        .copy-toast.show { opacity: 1; top: -25px; }
-
         .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
         .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
         .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
         #daysValue { font-size: 5rem; font-weight: 900; line-height: 1; }
-
         .history-section { margin-top: 30px; text-align: left; display: none; }
         .log-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
         .log-code { font-weight: 900; font-family: monospace; }
         .log-timestamp { display: block; opacity: 0.4; font-size: 0.55rem; font-weight: 800; }
-
         .hidden { display: none !important; }
         .shake { animation: shake 0.4s both; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
@@ -252,34 +183,36 @@
         <div class="hub-title">Select Commodity</div>
         <div class="selection-grid-container">
             <div class="selection-grid">
-                <div class="selection-card" onclick="openBrands('banana')">
+                <div class="selection-card" onclick="openMiddleHub('banana')">
                     <img src="banana.png" alt="banana">
-                    <div class="commodity-name-section">
-                        <span>Banana</span>
-                    </div>
+                    <div class="commodity-name-section"><span>Banana</span></div>
                 </div>
-                <div class="selection-card" onclick="openBrands('mango')">
+                <div class="selection-card" onclick="openMiddleHub('mango')">
                     <img src="mango.png" alt="mango">
-                    <div class="commodity-name-section">
-                        <span>Mango</span>
-                        <span class="tag-soon">(SOON)</span>
-                    </div>
+                    <div class="commodity-name-section"><span>Mango</span><span class="tag-soon">(SOON)</span></div>
                 </div>
-                <div class="selection-card" onclick="openBrands('avocado')">
+                <div class="selection-card" onclick="openMiddleHub('avocado')">
                     <img src="avocado.png" alt="avocado">
-                    <div class="commodity-name-section">
-                        <span>Avocado</span>
-                        <span class="tag-soon">(SOON)</span>
-                    </div>
+                    <div class="commodity-name-section"><span>Avocado</span><span class="tag-soon">(SOON)</span></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="middle-hub" class="nav-view hidden">
+        <div class="hub-title" id="middleHubTitle">Banana Menu</div>
+        <div class="list-container">
+            <div class="list-btn" id="brandsBtn" onclick="openBrands(activeFruit)">Banana Brands</div>
+            <div class="list-btn disabled">Defects (Soon)</div>
+            <div class="list-btn disabled">Ripening (Soon)</div>
+        </div>
+        <button class="btn-main" style="margin-top:40px; background:transparent; border:1px solid rgba(255,255,255,0.2);" onclick="showHub()">← Back</button>
+    </div>
+
     <div id="brand-hub" class="nav-view hidden">
         <div class="hub-title" id="brandHubTitle">Select Brand</div>
-        <div class="brand-list" id="brandGrid"></div>
-        <button class="btn-main" style="margin-top:40px; background:transparent; border:1px solid rgba(255,255,255,0.2);" onclick="showHub()">← Back</button>
+        <div class="list-container" id="brandGrid"></div>
+        <button class="btn-main" style="margin-top:40px; background:transparent; border:1px solid rgba(255,255,255,0.2);" onclick="openMiddleHub(activeFruit)">← Back</button>
     </div>
 
     <div class="app-container" id="appInterface">
@@ -287,31 +220,17 @@
             <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
             <div id="brandName" style="font-size: 1.4rem; font-weight: 900; color: var(--pulp-lime); text-transform: uppercase;">Chiquita</div>
             <div id="commodityLabel" style="font-weight: 900; letter-spacing: 4px; opacity: 0.5; font-size: 0.7rem; margin-bottom: 25px;">BANANA AGE CHECKER</div>
-            
-            <div class="input-wrapper">
-                <input type="text" id="codeIn" placeholder="---" maxlength="3" autofocus>
-            </div>
-            
+            <div class="input-wrapper"><input type="text" id="codeIn" placeholder="---" maxlength="3" autofocus></div>
             <button onclick="checkFruit()" class="btn-main">Calculate</button>
-
             <div id="resBox" class="result-display">
-                <div id="copyToast" class="copy-toast">COPIED TO CLIPBOARD</div>
                 <div id="statusLabel" style="font-weight:900;">READY</div>
                 <div id="daysValue">--</div>
-                <div style="font-size: 0.7rem; opacity: 0.4; font-weight: 800; text-transform: uppercase;">Days from Harvest</div>
                 <div id="dateText" style="font-size: 1.3rem; font-weight: 900; margin-top: 10px;">-- -- ----</div>
-                
-                <button class="btn btn-copy" onclick="copyResult()" id="copyBtn">
-                    <i class="bi bi-clipboard" id="copyIcon"></i> **COPY**
-                </button>
+                <button class="btn btn-copy" onclick="copyResult()" id="copyBtn"><i class="bi bi-clipboard"></i> **COPY**</button>
             </div>
-
             <button class="btn-main" style="margin-top:25px; background:transparent; border:none; opacity:0.4; font-size:0.6rem;" onclick="openBrands(activeFruit)">← Back to Brands</button>
         </div>
-
-        <div id="historySection" class="history-section">
-            <div id="historyList"></div>
-        </div>
+        <div id="historySection" class="history-section"><div id="historyList"></div></div>
     </div>
 
 <script>
@@ -330,45 +249,46 @@
     }
 
     function showHub() {
+        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('fruit-hub').classList.remove('hidden');
-        document.getElementById('brand-hub').classList.add('hidden');
         document.getElementById('appInterface').style.display = 'none';
-        if(document.getElementById('menu-drawer').classList.contains('open')) toggleMenu();
+    }
+
+    function openMiddleHub(fruit) {
+        activeFruit = fruit;
+        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
+        document.getElementById('appInterface').style.display = 'none';
+        document.getElementById('middle-hub').classList.remove('hidden');
+        
+        const title = fruit.charAt(0).toUpperCase() + fruit.slice(1);
+        document.getElementById('middleHubTitle').innerText = `${title} Menu`;
+        document.getElementById('brandsBtn').innerText = `${title} Brands`;
     }
 
     function openBrands(fruit) {
-        activeFruit = fruit;
-        document.getElementById('fruit-hub').classList.add('hidden');
-        document.getElementById('appInterface').style.display = 'none';
+        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('brand-hub').classList.remove('hidden');
-        document.getElementById('brandHubTitle').innerText = `${fruit} brands`;
+        document.getElementById('brandHubTitle').innerText = `Select Brand`;
         
         const grid = document.getElementById('brandGrid');
-        grid.innerHTML = ''; 
-
-        if (fruit === 'banana') {
-            grid.innerHTML = `
-                <div class="brand-btn" onclick="openCalc('Chiquita')">Chiquita</div>
-                <div class="brand-btn disabled">Fyffes (Soon)</div>
-                <div class="brand-btn disabled">Favorita (Soon)</div>
-                <div class="brand-btn disabled">Agrofair (Soon)</div>
-                <div class="brand-btn disabled">Port (Soon)</div>
-            `;
-        } else {
-            grid.innerHTML = `<div style="opacity:0.5; padding:20px;">Logic for ${fruit} brands coming soon.</div>`;
-        }
+        grid.innerHTML = (fruit === 'banana') ? `
+            <div class="list-btn" onclick="openCalc('Chiquita')">Chiquita</div>
+            <div class="list-btn disabled">Fyffes (Soon)</div>
+            <div class="list-btn disabled">Favorita (Soon)</div>
+            <div class="list-btn disabled">Agrofair (Soon)</div>
+            <div class="list-btn disabled">Port (Soon)</div>
+        ` : `<div style="opacity:0.5; padding:20px;">Logic for ${fruit} brands coming soon.</div>`;
     }
 
     function openCalc(brand) {
         activeBrand = brand;
-        document.getElementById('brand-hub').classList.add('hidden');
+        document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('appInterface').style.display = 'flex';
         document.getElementById('brandName').innerText = brand;
         document.getElementById('commodityLabel').innerText = `${activeFruit.toUpperCase()} AGE CHECKER`;
         document.getElementById('codeIn').value = '';
         document.getElementById('resBox').className = 'result-display';
         document.getElementById('daysValue').innerText = '--';
-        resetCopyButton();
     }
 
     const inputField = document.getElementById('codeIn');
@@ -377,11 +297,7 @@
     function checkFruit(historicalCode = null) {
         const val = historicalCode || inputField.value.toUpperCase();
         if (historicalCode) inputField.value = historicalCode;
-        if (val.length < 3) return;
-
-        const mChar = val.charCodeAt(0);
-        const dChar = val.charCodeAt(1);
-        const yDigit = val.charAt(2);
+        const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
         const isValid = (mChar >= 65 && mChar <= 76) && (dChar >= 65 && dChar <= 90) && (yDigit === '1' || yDigit === '2');
 
         if (!isValid) {
@@ -390,68 +306,44 @@
             return;
         }
 
-        const now = new Date();
-        const m = mChar - 65;
+        const now = new Date(), m = mChar - 65;
         let d = dChar - 64; if (yDigit === '2') d += 26;
         let hDate = new Date(now.getFullYear(), m, d);
         if (hDate > now) hDate.setFullYear(now.getFullYear() - 1);
         const diff = Math.floor((now - hDate) / (1000*60*60*24));
 
-        const box = document.getElementById('resBox');
         document.getElementById('daysValue').innerText = diff;
         document.getElementById('dateText').innerText = hDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
 
         let statusColor = "";
-        const label = document.getElementById('statusLabel');
+        const box = document.getElementById('resBox'), label = document.getElementById('statusLabel');
         if (diff > 31) { label.innerText = "TOO OLD"; box.className = 'result-display bg-old'; statusColor = "#ff4d4d"; }
         else if (diff <= 21) { label.innerText = "PERFECT"; box.className = 'result-display bg-perfect'; statusColor = "#a6e22e"; }
         else { label.innerText = "ACCEPTABLE"; box.className = 'result-display bg-acceptable'; statusColor = "#ff8c00"; }
 
-        resetCopyButton();
         if (!historicalCode) saveToHistory(val, diff, statusColor);
     }
 
-    function resetCopyButton() {
-        const btn = document.getElementById('copyBtn');
-        btn.classList.remove('success');
-        btn.innerHTML = `<i class="bi bi-clipboard" id="copyIcon"></i> **COPY**`;
-    }
-
     function copyResult() {
-        const days = document.getElementById('daysValue').innerText;
-        const date = document.getElementById('dateText').innerText;
-        const code = document.getElementById('codeIn').value.toUpperCase();
+        const days = document.getElementById('daysValue').innerText, date = document.getElementById('dateText').innerText, code = document.getElementById('codeIn').value.toUpperCase();
         if (days === '--') return;
-
-        const textToCopy = `Pulp Pro Report\nCode:${code}\nAge:${days} Days\nHarvest Date:${date}`;
-        
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            const toast = document.getElementById('copyToast');
-            const btn = document.getElementById('copyBtn');
-            toast.classList.add('show');
-            btn.classList.add('success');
-            btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
-            setTimeout(() => { toast.classList.remove('show'); resetCopyButton(); }, 2000);
-        });
+        navigator.clipboard.writeText(`Pulp Pro Report\nCode:${code}\nAge:${days} Days\nHarvest Date:${date}`);
     }
 
     function saveToHistory(code, days, color) {
         const now = new Date();
-        const ts = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} • ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        scanHistory.unshift({ code, days, color, timestamp: ts.toUpperCase(), brand: activeBrand });
+        const ts = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} • ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`.toUpperCase();
+        scanHistory.unshift({ code, days, color, timestamp: ts, brand: activeBrand });
         if (scanHistory.length > 25) scanHistory.pop();
         localStorage.setItem('pulpProHistory', JSON.stringify(scanHistory));
         renderHistory();
     }
 
     function renderHistory() {
-        const list = document.getElementById('historyList');
-        const section = document.getElementById('historySection');
+        const list = document.getElementById('historyList'), section = document.getElementById('historySection');
         if (scanHistory.length === 0) { section.style.display = "none"; return; }
         section.style.display = "block";
-        list.innerHTML = `
-            <div style="font-size:0.75rem; font-weight:900; color:var(--pulp-lime); margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">ARCHIVE</div>
-        ` + scanHistory.map(item => `
+        list.innerHTML = `<div style="font-size:0.75rem; font-weight:900; color:var(--pulp-lime); margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">ARCHIVE</div>` + scanHistory.map(item => `
             <div class="log-item" onclick="checkFruit('${item.code}')">
                 <div class="log-code">${item.code} <small style="font-size:0.5rem; opacity:0.4;">${item.brand || ''}</small></div>
                 <div class="log-meta" style="text-align:right;">
