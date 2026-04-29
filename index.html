@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pulp Pro</title>
+    <title>Pulp Pro | Hub</title>
     
     <style>
         :root {
             --pulp-lime: #a6e22e; 
             --pulp-amber: #ff8c00;
             --bg-black: #000000;
-            --glass-card: rgba(30, 30, 32, 0.8);
+            --glass-card: rgba(30, 30, 32, 0.85);
         }
 
         body { 
             background-color: var(--bg-black);
             background-image: radial-gradient(circle at top right, #1a1a1a, #000);
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0; color: #fff; overflow-x: hidden;
-            padding: 20px; display: flex; justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0; color: #fff; display: flex; justify-content: center; padding: 20px;
         }
 
         /* HEADER */
@@ -27,15 +26,15 @@
             padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px;
         }
         .logo-group { display: flex; align-items: center; gap: 12px; }
-        .logo-group img { height: 35px; }
+        .logo-group img { height: 35px; border-radius: 8px; }
         .logo-group span { font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; }
         .hub-label { font-weight: 300; opacity: 0.5; border-left: 1px solid #444; padding-left: 15px; margin-left: 5px; }
 
         /* HUB VIEW */
         .nav-view { width: 100%; max-width: 900px; }
-        .section-title { font-weight: 800; font-size: 1.6rem; margin-bottom: 30px; }
+        .section-title { font-weight: 800; font-size: 1.8rem; margin-bottom: 30px; letter-spacing: -0.5px; }
 
-        /* THE BIG BLOCKS */
+        /* COMMODITY CARDS */
         .selection-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -43,36 +42,32 @@
         }
         
         .selection-card {
-            position: relative; height: 350px; border-radius: 25px; overflow: hidden;
+            position: relative; height: 380px; border-radius: 28px; overflow: hidden;
             cursor: pointer; border: 1px solid rgba(255,255,255,0.1); 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             background: #111;
         }
-        .selection-card:hover { transform: scale(1.02); border-color: var(--pulp-lime); }
+        .selection-card:hover { transform: translateY(-8px); border-color: var(--pulp-lime); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
         
         .card-img { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            object-fit: cover; z-index: 1; 
+            object-fit: cover; z-index: 1; transition: transform 0.6s ease;
         }
+        .selection-card:hover .card-img { transform: scale(1.05); }
 
         .card-overlay { 
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%);
-            z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 60%);
+            z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; padding: 30px;
         }
 
         .card-tag { 
-            font-size: 0.7rem; font-weight: 900; color: var(--pulp-amber); 
-            letter-spacing: 2px; text-transform: uppercase;
+            font-size: 0.75rem; font-weight: 900; color: var(--pulp-amber); 
+            letter-spacing: 2px; text-transform: uppercase; background: rgba(0,0,0,0.5);
+            padding: 5px 12px; border-radius: 10px; width: fit-content;
         }
 
-        /* BRAND & CALC VIEWS */
         .hidden { display: none !important; }
-        .btn-main { 
-            background: var(--pulp-lime); color: #000; font-weight: 900; 
-            border: none; padding: 18px; border-radius: 50px; width: 100%; 
-            text-transform: uppercase; cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -80,63 +75,58 @@
     <div class="nav-view">
         <div class="header-main">
             <div class="logo-group">
-                <img src="edited-image.png" alt="Pulp Pro">
+                <img src="https://github.com/placeholder-logo.png?raw=true" id="mainLogo" alt="Pulp Pro">
                 <span>Pulp Pro <span class="hub-label">Hub</span></span>
             </div>
-            <div style="cursor:pointer; font-size:1.5rem;">☰</div>
+            <div style="cursor:pointer; font-size:1.5rem; opacity:0.7;">☰</div>
         </div>
 
         <div id="fruit-hub">
             <div class="section-title">Select Commodity</div>
             <div class="selection-grid">
                 
-                <div class="selection-card" onclick="openBrands('banana')">
-                    <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/banana.png" class="card-img">
+                <div class="selection-card" onclick="alert('Opening Banana Brands...')">
+                    <img src="" id="img-banana" class="card-img" alt="Banana">
                     <div class="card-overlay"></div>
                 </div>
 
-                <div class="selection-card" onclick="openBrands('mango')">
-                    <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/mango.png" class="card-img">
+                <div class="selection-card">
+                    <img src="" id="img-mango" class="card-img" alt="Mango">
                     <div class="card-overlay">
-                        <span class="card-tag">(SOON)</span>
+                        <span class="card-tag">Soon</span>
                     </div>
                 </div>
 
-                <div class="selection-card" onclick="openBrands('avocado')">
-                    <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/avocado.png" class="card-img">
+                <div class="selection-card">
+                    <img src="" id="img-avocado" class="card-img" alt="Avocado">
                     <div class="card-overlay">
-                        <span class="card-tag">(SOON)</span>
+                        <span class="card-tag">Soon</span>
                     </div>
                 </div>
 
             </div>
         </div>
-
-        <div id="brand-hub" class="hidden">
-            <div class="section-title" id="brandHubTitle">Select Brand</div>
-            <div id="brandGrid"></div>
-            <button class="btn-main" style="margin-top:20px; background:transparent; color:#fff; border:1px solid #444;" onclick="showHub()">← Back</button>
-        </div>
     </div>
 
 <script>
-    function showHub() {
-        document.getElementById('fruit-hub').classList.remove('hidden');
-        document.getElementById('brand-hub').classList.add('hidden');
-    }
+    /** * CONFIGURATION: Replace these with your actual GitHub info
+     */
+    const GITHUB_USER = "YOUR_USERNAME"; // e.g., "johndoe"
+    const GITHUB_REPO = "YOUR_REPO_NAME"; // e.g., "pulp-pro-assets"
+    const BRANCH = "main"; // usually "main" or "master"
 
-    function openBrands(fruit) {
-        document.getElementById('fruit-hub').classList.add('hidden');
-        document.getElementById('brand-hub').classList.remove('hidden');
-        document.getElementById('brandHubTitle').innerText = fruit.toUpperCase() + " BRANDS";
+    // Helper to build the correct Raw URL
+    const getRawUrl = (fileName) => `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/blob/${BRANCH}/${fileName}?raw=true`;
+
+    // Apply images once the page loads
+    window.onload = () => {
+        document.getElementById('img-banana').src = getRawUrl('banana.png');
+        document.getElementById('img-mango').src = getRawUrl('mango.png');
+        document.getElementById('img-avocado').src = getRawUrl('avocado.png');
         
-        const grid = document.getElementById('brandGrid');
-        if(fruit === 'banana') {
-            grid.innerHTML = `<div style="background:var(--glass-card); padding:25px; border-radius:20px; text-align:center; font-weight:800; cursor:pointer;" onclick="alert('Calculator Loading...')">CHIQUITA</div>`;
-        } else {
-            grid.innerHTML = `<div style="text-align:center; opacity:0.5; padding:40px;">Coming Soon</div>`;
-        }
-    }
+        // Update logo as well if you have it in the repo
+        document.getElementById('mainLogo').src = getRawUrl('edited-image.png');
+    };
 </script>
 </body>
 </html>
