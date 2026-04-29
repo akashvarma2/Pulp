@@ -388,29 +388,25 @@
         renderHistory(); 
     });
 
+    /**
+     * UPDATED ENTER KEY LISTENER
+     * Forces keyboard dismissal immediately before checking code.
+     */
     inputField.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            forceHideKeyboard(); // Added this to trigger reset on Enter
             checkFruit();
         }
     });
 
-    /**
-     * THE SAMSUNG NUCLEAR OPTION
-     * Temporarily changing the 'type' attribute to 'button' kills the 
-     * keyboard connection immediately across all Chromium-based Android browsers.
-     */
     function forceHideKeyboard() {
-        // Standard blur first
         inputField.blur();
-        
-        // The type-switch reset
         const currentType = inputField.getAttribute('type');
         inputField.setAttribute('type', 'button'); 
-        
         setTimeout(() => {
             inputField.setAttribute('type', currentType);
-            inputField.blur(); // Final insurance
+            inputField.blur();
         }, 100);
     }
 
@@ -426,7 +422,7 @@
             return;
         }
 
-        // Action: Execute Samsung Keyboard Reset
+        // Action: Final keyboard safety check
         if (!historicalCode) {
             forceHideKeyboard();
         }
