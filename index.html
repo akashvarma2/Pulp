@@ -267,7 +267,6 @@
     </div>
 
 <script>
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
@@ -406,6 +405,11 @@
             box.classList.add('hidden');
             if(!historicalCode) triggerShake();
             return;
+        }
+
+        // Hide keyboard on mobile
+        if (!historicalCode) {
+            inputField.blur();
         }
 
         const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
