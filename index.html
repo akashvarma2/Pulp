@@ -23,8 +23,9 @@
         body { 
             background-color: var(--bg-black);
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;
-            color: #fff; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100vh; margin: 0; color: #fff; overflow-x: hidden;
+            padding: 20px;
         }
 
         /* SPLASH SCREEN */
@@ -34,8 +35,8 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 1s ease-in-out, visibility 1s;
         }
-        .splash-logo { width: 70vw; max-width: 350px; animation: heroFade 2.6s ease-in-out forwards; }
-        .splash-text { margin-top: 20px; font-size: 2.5rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
+        .splash-logo { width: 60vw; max-width: 300px; animation: heroFade 2.6s ease-in-out forwards; }
+        .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
 
         @keyframes heroFade {
             0% { transform: scale(0.8); opacity: 0; filter: blur(15px); }
@@ -51,46 +52,70 @@
         }
         .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
-        /* MAIN CARD */
+        /* RESPONSIVE CONTAINER */
+        .app-container {
+            display: flex; flex-direction: column; gap: 30px;
+            width: 100%; max-width: 380px; /* Mobile Default */
+            opacity: 0; transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.15, 1, 0.3, 1) 2.3s;
+        }
+        .loaded .app-container { opacity: 1; transform: translateY(0); }
+
+        /* Desktop Layout Switch */
+        @media (min-width: 992px) {
+            .app-container {
+                flex-direction: row;
+                max-width: 900px;
+                align-items: flex-start;
+            }
+            .app-card { flex: 1; }
+            .history-section { 
+                flex: 1; margin-top: 0 !important; 
+                background: var(--glass-card);
+                padding: 2.5rem 1.5rem; border-radius: 50px;
+                border: 1px solid rgba(255,255,255,0.1);
+                max-height: 650px; overflow-y: auto;
+            }
+        }
+
+        /* MAIN CARD UI */
         .app-card {
             background: var(--glass-card);
             padding: 2.5rem 1.5rem; border-radius: 50px;
-            width: 92%; max-width: 380px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center; border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 40px 100px rgba(0,0,0,1);
             backdrop-filter: blur(30px);
-            transform: translateY(80px); opacity: 0;
-            transition: all 1.2s cubic-bezier(0.15, 1, 0.3, 1) 2.3s;
         }
-        .loaded .app-card { transform: translateY(0); opacity: 1; }
 
-        .mini-logo { width: 60px; height: 60px; margin-bottom: 12px; object-fit: contain; }
-        .chiquita-text { font-size: 1.6rem; font-weight: 900; color: var(--pulp-lime); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-        .checker-title { font-weight: 900; letter-spacing: 4px; color: #fff; opacity: 0.6; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 30px; }
+        .mini-logo { width: 50px; height: 50px; margin-bottom: 10px; object-fit: contain; }
+        .chiquita-text { font-size: 1.4rem; font-weight: 900; color: var(--pulp-lime); text-transform: uppercase; letter-spacing: 2px; }
+        .checker-title { font-weight: 900; letter-spacing: 4px; color: #fff; opacity: 0.5; text-transform: uppercase; font-size: 0.7rem; margin-bottom: 25px; }
 
-        /* INPUTS */
-        .input-wrapper { background: rgba(255,255,255,0.03); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 20px; margin-bottom: 25px; }
-        input { border: none !important; text-align: center; letter-spacing: 12px; font-weight: 900; font-size: 3.5rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
+        .input-wrapper { background: rgba(255,255,255,0.03); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 15px; margin-bottom: 20px; }
+        input { border: none !important; text-align: center; letter-spacing: 8px; font-weight: 900; font-size: 3rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
 
-        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 18px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3); }
+        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 15px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; }
 
         /* RESULT BOX */
-        .result-display { margin-top: 30px; padding: 25px; border-radius: 40px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); position: relative; }
+        .result-display { margin-top: 25px; padding: 20px; border-radius: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); }
         .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
         .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
         .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
 
-        #daysValue { font-size: 6rem; font-weight: 900; line-height: 1; }
-        .label-sub { font-size: 0.75rem; opacity: 0.4; font-weight: 800; text-transform: uppercase; }
+        #daysValue { font-size: 5rem; font-weight: 900; line-height: 1; }
+        .btn-copy { margin-top: 12px; background: rgba(255,255,255,0.1); border: none; color: #fff; border-radius: 10px; padding: 6px 12px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; display: none; margin: 15px auto 0 auto; }
 
-        /* COPY BUTTON */
-        .btn-copy {
-            margin-top: 15px; background: rgba(255,255,255,0.1); border: none; 
-            color: #fff; border-radius: 12px; padding: 8px 15px; font-size: 0.7rem; 
-            font-weight: 800; text-transform: uppercase; transition: 0.3s;
-            display: none; width: fit-content; margin-left: auto; margin-right: auto;
-        }
-        .btn-copy:active { background: var(--pulp-lime); color: #000; }
+        /* HISTORY LIST */
+        .history-section { margin-top: 30px; text-align: left; display: none; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .history-header span { font-size: 0.75rem; font-weight: 900; letter-spacing: 2px; color: var(--pulp-lime); text-transform: uppercase; }
+        .btn-clear { background: transparent; border: none; color: var(--pulp-red); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
+        
+        .log-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; border-radius: 15px; transition: 0.2s; }
+        .log-item:hover { background: rgba(166, 226, 46, 0.05); }
+        .log-code { font-weight: 900; font-size: 1.1rem; color: #fff; font-family: monospace; }
+        .log-meta { text-align: right; }
+        .log-timestamp { display: block; opacity: 0.4; font-size: 0.6rem; font-weight: 800; }
 
         .shake { animation: shake 0.4s both; }
         @keyframes shake {
@@ -106,38 +131,52 @@
         <div class="splash-text">PULP PRO</div>
     </div>
 
-<div class="app-card" id="appCard">
-    <img src="edited-image.png" class="mini-logo" alt="Pulp Pro">
-    <div class="chiquita-text">Chiquita Banana</div>
-    <div class="checker-title">Age Checker</div>
-    
-    <div class="input-wrapper">
-        <input type="text" id="codeIn" placeholder="---" maxlength="3" inputmode="text" autocapitalize="characters" autofocus>
-    </div>
-    
-    <button onclick="checkBanana()" class="btn-main">Calculate</button>
-
-    <div id="resBox" class="result-display">
-        <div id="statusLabel" style="font-weight:900;">READY</div>
-        <div id="daysValue">--</div>
-        <div class="label-sub">Days from Harvest</div>
-        <div id="dateText" style="font-size: 1.5rem; font-weight: 900; margin-top: 15px;">-- -- ----</div>
+<div class="app-container">
+    <div class="app-card" id="appCard">
+        <img src="edited-image.png" class="mini-logo" alt="Pulp Pro Logo">
+        <div class="chiquita-text">Chiquita Banana</div>
+        <div class="checker-title">Age Checker</div>
         
-        <button id="copyBtn" class="btn-copy" onclick="copyDetails()">Copy Details</button>
+        <div class="input-wrapper">
+            <input type="text" id="codeIn" placeholder="---" maxlength="3" inputmode="text" autocapitalize="characters" autofocus>
+        </div>
+        
+        <button onclick="checkBanana()" class="btn-main">Calculate</button>
+
+        <div id="resBox" class="result-display">
+            <div id="statusLabel" style="font-weight:900;">READY</div>
+            <div id="daysValue">--</div>
+            <div style="font-size: 0.7rem; opacity: 0.4; font-weight: 800; text-transform: uppercase;">Days from Harvest</div>
+            <div id="dateText" style="font-size: 1.3rem; font-weight: 900; margin-top: 10px;">-- -- ----</div>
+            <button id="copyBtn" class="btn-copy" onclick="copyDetails()">Copy Details</button>
+        </div>
+    </div>
+
+    <div id="historySection" class="history-section">
+        <div class="history-header">
+            <span>Scan Archive</span>
+            <button class="btn-clear" onclick="clearHistory()">Clear</button>
+        </div>
+        <div id="historyList"></div>
     </div>
 </div>
 
 <script>
+    let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
+
     window.addEventListener('load', () => {
+        renderHistory();
         setTimeout(() => { document.body.classList.add('loaded'); }, 2500);
     });
 
     const inputField = document.getElementById('codeIn');
     inputField.addEventListener('input', () => { if (inputField.value.length === 3) checkBanana(); });
 
-    function checkBanana() {
-        const val = inputField.value.toUpperCase();
+    function checkBanana(historicalCode = null) {
+        const val = historicalCode || inputField.value.toUpperCase();
+        if (historicalCode) inputField.value = historicalCode;
         if (val.length < 3) return;
+
         const box = document.getElementById('resBox');
         const label = document.getElementById('statusLabel');
         const daysVal = document.getElementById('daysValue');
@@ -172,19 +211,46 @@
         box.className = 'result-display'; 
         copyBtn.style.display = "block";
 
-        if (diff > 31) { label.innerText = "TOO OLD"; box.classList.add('bg-old'); }
-        else if (diff <= 21) { label.innerText = "PERFECT"; box.classList.add('bg-perfect'); }
-        else { label.innerText = "ACCEPTABLE"; box.classList.add('bg-acceptable'); }
+        let statusColor = "";
+        if (diff > 31) { label.innerText = "TOO OLD"; box.classList.add('bg-old'); statusColor = "#ff4d4d"; }
+        else if (diff <= 21) { label.innerText = "PERFECT"; box.classList.add('bg-perfect'); statusColor = "#a6e22e"; }
+        else { label.innerText = "ACCEPTABLE"; box.classList.add('bg-acceptable'); statusColor = "#ff8c00"; }
+
+        if (!historicalCode) saveToHistory(val, diff, statusColor);
+    }
+
+    function saveToHistory(code, days, color) {
+        const now = new Date();
+        const ts = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} • ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        if (scanHistory.length > 0 && scanHistory[0].code === code) return;
+        scanHistory.unshift({ code, days, color, timestamp: ts.toUpperCase() });
+        if (scanHistory.length > 15) scanHistory.pop();
+        localStorage.setItem('pulpProHistory', JSON.stringify(scanHistory));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        const section = document.getElementById('historySection');
+        if (scanHistory.length === 0) { section.style.display = "none"; return; }
+        section.style.display = "block";
+        list.innerHTML = scanHistory.map(item => `
+            <div class="log-item" onclick="checkBanana('${item.code}')">
+                <div class="log-code">${item.code}</div>
+                <div class="log-meta">
+                    <span style="color:${item.color}; font-weight:900; font-size:0.9rem;">${item.days}D</span>
+                    <span class="log-timestamp">${item.timestamp}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function clearHistory() {
+        if(confirm("Wipe archive?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); }
     }
 
     function copyDetails() {
-        const code = inputField.value.toUpperCase();
-        const days = document.getElementById('daysValue').innerText;
-        const date = document.getElementById('dateText').innerText;
-        const status = document.getElementById('statusLabel').innerText;
-        
-        const text = `Pulp Pro Report\nCode: ${code}\nStatus: ${status}\nDays: ${days}\nHarvest: ${date}`;
-        
+        const text = `Pulp Pro Report\nCode: ${inputField.value.toUpperCase()}\nStatus: ${document.getElementById('statusLabel').innerText}\nDays: ${document.getElementById('daysValue').innerText}\nHarvest: ${document.getElementById('dateText').innerText}`;
         navigator.clipboard.writeText(text).then(() => {
             const btn = document.getElementById('copyBtn');
             btn.innerText = "COPIED!";
