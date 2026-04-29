@@ -396,29 +396,22 @@
     });
 
     /**
-     * SAMSUNG KEYBOARD FIX (Focus-Trap Method)
-     * Forces the virtual keyboard to close by creating a temporary, 
-     * non-keyboard element to steal focus.
+     * THE SAMSUNG NUCLEAR OPTION
+     * Temporarily changing the 'type' attribute to 'button' kills the 
+     * keyboard connection immediately across all Chromium-based Android browsers.
      */
     function forceHideKeyboard() {
-        // Standard blur
+        // Standard blur first
         inputField.blur();
         
-        // Create an invisible focus trap
-        const trap = document.createElement('input');
-        trap.setAttribute('type', 'text');
-        trap.style.position = 'fixed';
-        trap.style.top = '-100px';
-        trap.setAttribute('readonly', 'readonly'); // Prevents keyboard from opening on trap
-        document.body.appendChild(trap);
-        
-        trap.focus(); // Shift focus away from real input
+        // The type-switch reset
+        const currentType = inputField.getAttribute('type');
+        inputField.setAttribute('type', 'button'); 
         
         setTimeout(() => {
-            trap.blur();
-            document.body.removeChild(trap);
-            window.scrollTo(0, 0); // Ensure layout doesn't jump
-        }, 50);
+            inputField.setAttribute('type', currentType);
+            inputField.blur(); // Final insurance
+        }, 100);
     }
 
     function checkFruit(historicalCode = null) {
@@ -433,7 +426,7 @@
             return;
         }
 
-        // Action: Hide keyboard (Samsung Fix)
+        // Action: Execute Samsung Keyboard Reset
         if (!historicalCode) {
             forceHideKeyboard();
         }
