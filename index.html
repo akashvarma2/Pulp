@@ -26,7 +26,7 @@
         body { 
             background-color: var(--bg-black);
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex; align-items: center; justify-content: center; 
+            display: flex; align-items: flex-start; justify-content: center; 
             min-height: 100vh; margin: 0; color: #fff; overflow-x: hidden;
             padding: 20px;
         }
@@ -82,24 +82,37 @@
         .menu-item { padding: 15px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; }
 
         /* VIEWS */
-        .nav-view { max-width: 900px; width: 100%; text-align: center; opacity: 0; transition: 0.5s; margin-top: 60px; }
+        .nav-view { max-width: 900px; width: 100%; text-align: center; opacity: 0; transition: 0.5s; margin-top: 80px; }
         .loaded .nav-view { opacity: 1; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
         
-        /* COMMODITY CARDS - FIXED WIDTH FIX */
-        .selection-grid-container { width: 100%; overflow-x: auto; padding-bottom: 20px; scrollbar-width: thin; scrollbar-color: var(--pulp-lime) transparent; -webkit-overflow-scrolling: touch; }
-        .selection-grid { display: flex; gap: 20px; padding: 10px; width: max-content; margin: 0 auto; min-width: 100%; justify-content: center; }
+        /* COMMODITY CARDS - VERTICAL ON MOBILE */
+        .selection-grid-container { width: 100%; overflow: visible; padding-bottom: 40px; }
+        .selection-grid { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            align-items: center;
+            width: 100%;
+        }
         
-        @media (max-width: 768px) {
-            .selection-grid { justify-content: flex-start; padding-left: 10px; padding-right: 10px; }
+        /* GRID ON DESKTOP */
+        @media (min-width: 768px) {
+            .selection-grid { 
+                flex-direction: row; 
+                justify-content: center; 
+                flex-wrap: wrap;
+            }
         }
 
         .selection-card {
             background: var(--glass-card); border: 2px solid rgba(255,255,255,0.1); border-radius: 45px; 
             cursor: pointer; transition: 0.3s ease; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-end; width: 220px; height: 300px; 
+            align-items: center; justify-content: flex-end; width: 260px; height: 320px; 
             overflow: hidden; position: relative; flex-shrink: 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
+        .selection-card:hover { border-color: var(--pulp-lime); transform: translateY(-5px); }
         .selection-card img { position: absolute; top: 0; left: 0; width: 100%; height: 80%; object-fit: cover; border-radius: 43px 43px 0 0; }
         .commodity-name-section {
             width: 100%; height: 20%; display: flex; flex-direction: column; align-items: center; 
@@ -131,7 +144,7 @@
         .fav-card span { font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
 
         /* CALCULATOR & DESKTOP ADAPTATION */
-        .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 60px; }
+        .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 40px; }
         
         @media (min-width: 992px) {
             .app-container { flex-direction: row; max-width: 1100px; align-items: flex-start; justify-content: center; }
