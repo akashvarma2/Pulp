@@ -116,7 +116,19 @@
         .selection-card span { display: block; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; color: #fff; }
         .tag-soon { display: block; font-size: 0.6rem; color: var(--pulp-amber); margin-top: 4px; letter-spacing: 2px; }
 
-        /* LIST BUTTONS (MIDDLE HUB & BRANDS) */
+        /* FAVORITES SECTION (BOTTOM) */
+        #favorites-section { margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .fav-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px; }
+        .fav-card {
+            background: rgba(166, 226, 46, 0.05); border: 1px solid rgba(166, 226, 46, 0.2);
+            padding: 15px 25px; border-radius: 20px; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; min-width: 140px;
+        }
+        .fav-card:hover { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.15); }
+        .fav-card i { color: var(--pulp-lime); font-size: 1.2rem; margin-bottom: 5px; }
+        .fav-card span { font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* LIST BUTTONS */
         .list-container { display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto; }
         .list-btn {
             background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
@@ -127,12 +139,6 @@
         .list-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
         .list-btn.disabled { opacity: 0.5; cursor: default; }
 
-        @media (max-width: 600px) {
-            .selection-grid { flex-direction: column; width: 100%; margin: 0; }
-            .selection-card { width: 100%; height: 280px; }
-            .selection-grid-container { overflow-x: visible; }
-        }
-
         /* APP INTERFACE */
         .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 60px; margin-bottom: 40px; }
         @media (min-width: 992px) {
@@ -140,16 +146,25 @@
             .app-card { flex: 0 0 380px; position: sticky; top: 40px; }
             .history-section { flex: 1; margin-top: 0 !important; background: var(--glass-card); padding: 2.5rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; display: block !important; }
         }
-        .app-card { background: var(--glass-card); padding: 2.5rem 1.5rem; border-radius: 50px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 40px 100px rgba(0,0,0,1); backdrop-filter: blur(30px); }
+        .app-card { background: var(--glass-card); padding: 2.5rem 1.5rem; border-radius: 50px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 40px 100px rgba(0,0,0,1); backdrop-filter: blur(30px); position: relative; }
+        
+        /* FAV TOGGLE */
+        .fav-toggle { position: absolute; top: 30px; right: 35px; font-size: 1.6rem; cursor: pointer; color: rgba(255,255,255,0.1); transition: 0.3s; }
+        .fav-toggle.active { color: var(--pulp-lime); text-shadow: 0 0 10px rgba(166, 226, 46, 0.4); }
+
         .input-wrapper { background: rgba(255,255,255,0.03); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 15px; margin-bottom: 20px; }
         input { border: none !important; text-align: center; letter-spacing: 8px; font-weight: 900; font-size: 3rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
         .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 15px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; }
         .result-display { margin-top: 25px; padding: 25px 20px; border-radius: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); position: relative; }
+        
         .btn-copy { background: rgba(166, 226, 46, 0.1); border: 1px solid var(--pulp-lime); color: var(--pulp-lime); border-radius: 15px; padding: 8px 25px; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-copy.success { background: var(--pulp-lime); color: #000; }
+
         .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
         .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
         .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
         #daysValue { font-size: 5rem; font-weight: 900; line-height: 1; }
+        
         .history-section { margin-top: 30px; text-align: left; display: none; }
         .log-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
         .log-code { font-weight: 900; font-family: monospace; }
@@ -197,6 +212,11 @@
                 </div>
             </div>
         </div>
+
+        <div id="favorites-section" class="hidden">
+            <div class="hub-title" style="color: var(--pulp-amber); font-size: 0.8rem;">Saved Favorites</div>
+            <div class="fav-grid" id="fav-grid"></div>
+        </div>
     </div>
 
     <div id="middle-hub" class="nav-view hidden">
@@ -217,6 +237,7 @@
 
     <div class="app-container" id="appInterface">
         <div class="app-card" id="appCard">
+            <i class="bi bi-star-fill fav-toggle" id="favStar" onclick="toggleFavorite()"></i>
             <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
             <div id="brandName" style="font-size: 1.4rem; font-weight: 900; color: var(--pulp-lime); text-transform: uppercase;">Chiquita</div>
             <div id="commodityLabel" style="font-weight: 900; letter-spacing: 4px; opacity: 0.5; font-size: 0.7rem; margin-bottom: 25px;">BANANA AGE CHECKER</div>
@@ -235,11 +256,13 @@
 
 <script>
     let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
+    let favorites = JSON.parse(localStorage.getItem('pulpProFavorites')) || [];
     let activeFruit = '';
     let activeBrand = '';
 
     window.addEventListener('load', () => {
         renderHistory();
+        renderFavorites();
         setTimeout(() => { document.body.classList.add('loaded'); }, 2500);
     });
 
@@ -252,36 +275,40 @@
         document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('fruit-hub').classList.remove('hidden');
         document.getElementById('appInterface').style.display = 'none';
+        renderFavorites();
     }
 
     function openMiddleHub(fruit) {
         activeFruit = fruit;
         document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('appInterface').style.display = 'none';
         document.getElementById('middle-hub').classList.remove('hidden');
-        
         const title = fruit.charAt(0).toUpperCase() + fruit.slice(1);
         document.getElementById('middleHubTitle').innerText = `${title} Menu`;
         document.getElementById('brandsBtn').innerText = `${title} Brands`;
     }
 
     function openBrands(fruit) {
+        activeFruit = fruit;
         document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('brand-hub').classList.remove('hidden');
-        document.getElementById('brandHubTitle').innerText = `Select Brand`;
-        
         const grid = document.getElementById('brandGrid');
-        grid.innerHTML = (fruit === 'banana') ? `
-            <div class="list-btn" onclick="openCalc('Chiquita')">Chiquita</div>
-            <div class="list-btn disabled">Fyffes (Soon)</div>
-            <div class="list-btn disabled">Favorita (Soon)</div>
-            <div class="list-btn disabled">Agrofair (Soon)</div>
-            <div class="list-btn disabled">Port (Soon)</div>
-        ` : `<div style="opacity:0.5; padding:20px;">Logic for ${fruit} brands coming soon.</div>`;
+        
+        if (fruit === 'banana') {
+            grid.innerHTML = `
+                <div class="list-btn" onclick="openCalc('Chiquita')">Chiquita</div>
+                <div class="list-btn" onclick="openCalc('Fyffes')">Fyffes</div>
+                <div class="list-btn" onclick="openCalc('Favorita')">Favorita</div>
+                <div class="list-btn" onclick="openCalc('Agrofair')">Agrofair</div>
+                <div class="list-btn" onclick="openCalc('Port')">Port</div>
+            `;
+        } else {
+            grid.innerHTML = `<div style="opacity:0.5; padding:20px;">Logic for ${fruit} brands coming soon.</div>`;
+        }
     }
 
-    function openCalc(brand) {
+    function openCalc(brand, fruit = activeFruit) {
         activeBrand = brand;
+        activeFruit = fruit;
         document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
         document.getElementById('appInterface').style.display = 'flex';
         document.getElementById('brandName').innerText = brand;
@@ -289,14 +316,48 @@
         document.getElementById('codeIn').value = '';
         document.getElementById('resBox').className = 'result-display';
         document.getElementById('daysValue').innerText = '--';
+        updateFavoriteUI();
     }
 
+    // FAVORITES LOGIC
+    function toggleFavorite() {
+        const id = `${activeFruit}_${activeBrand}`;
+        const index = favorites.findIndex(f => f.id === id);
+        if (index > -1) { favorites.splice(index, 1); } 
+        else { favorites.push({ id, fruit: activeFruit, brand: activeBrand }); }
+        localStorage.setItem('pulpProFavorites', JSON.stringify(favorites));
+        updateFavoriteUI();
+    }
+
+    function updateFavoriteUI() {
+        const id = `${activeFruit}_${activeBrand}`;
+        const isFav = favorites.some(f => f.id === id);
+        document.getElementById('favStar').classList.toggle('active', isFav);
+    }
+
+    function renderFavorites() {
+        const section = document.getElementById('favorites-section');
+        const grid = document.getElementById('fav-grid');
+        if (favorites.length === 0) { section.classList.add('hidden'); return; }
+        section.classList.remove('hidden');
+        grid.innerHTML = favorites.map(f => `
+            <div class="fav-card" onclick="openCalc('${f.brand}', '${f.fruit}')">
+                <i class="bi bi-star-fill"></i>
+                <span>${f.brand}</span>
+                <small style="opacity:0.5; font-size:0.55rem;">${f.fruit.toUpperCase()}</small>
+            </div>
+        `).join('');
+    }
+
+    // CALCULATION & HISTORY
     const inputField = document.getElementById('codeIn');
     inputField.addEventListener('input', () => { if (inputField.value.length === 3) checkFruit(); });
 
     function checkFruit(historicalCode = null) {
         const val = historicalCode || inputField.value.toUpperCase();
         if (historicalCode) inputField.value = historicalCode;
+        if (val.length < 3) return;
+
         const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
         const isValid = (mChar >= 65 && mChar <= 76) && (dChar >= 65 && dChar <= 90) && (yDigit === '1' || yDigit === '2');
 
@@ -327,7 +388,13 @@
     function copyResult() {
         const days = document.getElementById('daysValue').innerText, date = document.getElementById('dateText').innerText, code = document.getElementById('codeIn').value.toUpperCase();
         if (days === '--') return;
-        navigator.clipboard.writeText(`Pulp Pro Report\nCode:${code}\nAge:${days} Days\nHarvest Date:${date}`);
+        const textToCopy = `Pulp Pro Report\nCode:${code}\nAge:${days} Days\nHarvest Date:${date}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.classList.add('success');
+            btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
+            setTimeout(() => { btn.classList.remove('success'); btn.innerHTML = `<i class="bi bi-clipboard"></i> **COPY**`; }, 2000);
+        });
     }
 
     function saveToHistory(code, days, color) {
