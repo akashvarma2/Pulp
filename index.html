@@ -11,6 +11,8 @@
     <link rel="apple-touch-icon" href="edited-image.png">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <style>
         :root {
             --pulp-lime: #a6e22e; 
@@ -100,52 +102,36 @@
         .selection-card span { display: block; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
         .tag-soon { display: block; font-size: 0.55rem; color: var(--pulp-amber); margin-top: 6px; letter-spacing: 2px; }
 
-        /* BRAND LIST */
+        /* BRAND LIST STYLING */
         .brand-list { display: flex; flex-direction: column; gap: 15px; }
         .brand-btn {
-            background: var(--glass-card); border: 1px solid rgba(255,255,255,0.1);
-            padding: 22px; border-radius: 20px; cursor: pointer; transition: 0.3s;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
-            color: #fff; text-align: center;
+            background: var(--glass-card); 
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 22px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: 0.3s;
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            font-size: 0.9rem;
+            color: #fff; 
+            text-align: center;
+            display: block;
+            width: 100%;
         }
-        .brand-btn:hover { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
+        .brand-btn:hover:not(.disabled) { border-color: var(--pulp-lime); background: rgba(166, 226, 46, 0.05); color: var(--pulp-lime); }
+        .brand-btn.disabled { opacity: 0.5; cursor: default; }
 
-        /* APP CONTAINER - RESPONSIVE UPDATES */
+        /* APP CONTAINER */
         .app-container {
             display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; margin-top: 60px; margin-bottom: 40px;
         }
 
         @media (min-width: 992px) {
-            .app-container { 
-                flex-direction: row; 
-                max-width: 1100px; 
-                align-items: flex-start;
-                justify-content: center;
-            }
-            .app-card { 
-                flex: 0 0 380px; 
-                position: sticky; 
-                top: 40px; 
-            }
-            .history-section { 
-                flex: 1; 
-                margin-top: 0 !important; 
-                background: var(--glass-card); 
-                padding: 2.5rem; 
-                border-radius: 50px; 
-                border: 1px solid rgba(255,255,255,0.1); 
-                max-height: 85vh; 
-                overflow-y: auto; 
-                display: block !important;
-                scrollbar-width: thin;
-                scrollbar-color: var(--pulp-lime) transparent;
-            }
-            .history-section::-webkit-scrollbar { width: 6px; }
-            .history-section::-webkit-scrollbar-thumb { background: var(--pulp-lime); border-radius: 10px; }
-        }
-
-        @media (max-width: 991px) {
-            .history-section { width: 100%; max-height: none; overflow: visible; }
+            .app-container { flex-direction: row; max-width: 1100px; align-items: flex-start; justify-content: center; }
+            .app-card { flex: 0 0 380px; position: sticky; top: 40px; }
+            .history-section { flex: 1; margin-top: 0 !important; background: var(--glass-card); padding: 2.5rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; display: block !important; }
         }
 
         .app-card {
@@ -158,7 +144,15 @@
         input { border: none !important; text-align: center; letter-spacing: 8px; font-weight: 900; font-size: 3rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
         .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 15px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; }
         
-        .result-display { margin-top: 25px; padding: 20px; border-radius: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); }
+        .result-display { margin-top: 25px; padding: 25px 20px; border-radius: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); position: relative; }
+        
+        .btn-copy { background: rgba(166, 226, 46, 0.1); border: 1px solid var(--pulp-lime); color: var(--pulp-lime); border-radius: 15px; padding: 8px 25px; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-copy:active { transform: scale(0.95); }
+        .btn-copy.success { background: var(--pulp-lime); color: #000; }
+
+        .copy-toast { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--pulp-lime); color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 12px; border-radius: 20px; opacity: 0; transition: 0.3s; pointer-events: none; }
+        .copy-toast.show { opacity: 1; top: -25px; }
+
         .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
         .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
         .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
@@ -233,10 +227,15 @@
             <button onclick="checkFruit()" class="btn-main">Calculate</button>
 
             <div id="resBox" class="result-display">
+                <div id="copyToast" class="copy-toast">COPIED TO CLIPBOARD</div>
                 <div id="statusLabel" style="font-weight:900;">READY</div>
                 <div id="daysValue">--</div>
                 <div style="font-size: 0.7rem; opacity: 0.4; font-weight: 800; text-transform: uppercase;">Days from Harvest</div>
                 <div id="dateText" style="font-size: 1.3rem; font-weight: 900; margin-top: 10px;">-- -- ----</div>
+                
+                <button class="btn btn-copy" onclick="copyResult()" id="copyBtn">
+                    <i class="bi bi-clipboard" id="copyIcon"></i> **COPY**
+                </button>
             </div>
 
             <button class="btn-main" style="margin-top:25px; background:transparent; border:none; opacity:0.4; font-size:0.6rem;" onclick="openBrands(activeFruit)">← Back to Brands</button>
@@ -282,7 +281,10 @@
         if (fruit === 'banana') {
             grid.innerHTML = `
                 <div class="brand-btn" onclick="openCalc('Chiquita')">Chiquita</div>
-                <div class="brand-btn" style="opacity:0.5; cursor:default;">Dole (SOON)</div>
+                <div class="brand-btn disabled">Fyffes (Soon)</div>
+                <div class="brand-btn disabled">Favorita (Soon)</div>
+                <div class="brand-btn disabled">Agrofair (Soon)</div>
+                <div class="brand-btn disabled">Port (Soon)</div>
             `;
         } else {
             grid.innerHTML = `<div style="opacity:0.5; padding:20px;">Logic for ${fruit} brands coming soon.</div>`;
@@ -298,6 +300,7 @@
         document.getElementById('codeIn').value = '';
         document.getElementById('resBox').className = 'result-display';
         document.getElementById('daysValue').innerText = '--';
+        resetCopyButton();
     }
 
     const inputField = document.getElementById('codeIn');
@@ -336,14 +339,39 @@
         else if (diff <= 21) { label.innerText = "PERFECT"; box.className = 'result-display bg-perfect'; statusColor = "#a6e22e"; }
         else { label.innerText = "ACCEPTABLE"; box.className = 'result-display bg-acceptable'; statusColor = "#ff8c00"; }
 
+        resetCopyButton();
         if (!historicalCode) saveToHistory(val, diff, statusColor);
+    }
+
+    function resetCopyButton() {
+        const btn = document.getElementById('copyBtn');
+        btn.classList.remove('success');
+        btn.innerHTML = `<i class="bi bi-clipboard" id="copyIcon"></i> **COPY**`;
+    }
+
+    function copyResult() {
+        const days = document.getElementById('daysValue').innerText;
+        const date = document.getElementById('dateText').innerText;
+        const code = document.getElementById('codeIn').value.toUpperCase();
+        if (days === '--') return;
+
+        const textToCopy = `Pulp Pro Report\nCode:${code}\nAge:${days} Days\nHarvest Date:${date}`;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const toast = document.getElementById('copyToast');
+            const btn = document.getElementById('copyBtn');
+            toast.classList.add('show');
+            btn.classList.add('success');
+            btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
+            setTimeout(() => { toast.classList.remove('show'); resetCopyButton(); }, 2000);
+        });
     }
 
     function saveToHistory(code, days, color) {
         const now = new Date();
         const ts = `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} • ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         scanHistory.unshift({ code, days, color, timestamp: ts.toUpperCase(), brand: activeBrand });
-        if (scanHistory.length > 15) scanHistory.pop();
+        if (scanHistory.length > 25) scanHistory.pop();
         localStorage.setItem('pulpProHistory', JSON.stringify(scanHistory));
         renderHistory();
     }
