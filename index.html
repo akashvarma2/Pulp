@@ -22,38 +22,20 @@
 
         body { 
             background-color: var(--bg-black);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;
             color: #fff; overflow: hidden;
         }
 
-        /* 1. CINEMATIC SPLASH SCREEN */
+        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-black); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 1s ease-in-out, visibility 1s;
         }
-
-        .splash-logo {
-            width: 70vw; 
-            max-width: 350px;
-            height: auto;
-            object-fit: contain;
-            animation: heroFade 2.6s ease-in-out forwards;
-        }
-
-        .splash-text {
-            margin-top: 20px;
-            font-size: 2.5rem;
-            font-weight: 900;
-            letter-spacing: 6px;
-            color: var(--pulp-lime);
-            text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(166, 226, 46, 0.5);
-            opacity: 0;
-            animation: textFade 2.6s ease-in-out forwards;
-        }
+        .splash-logo { width: 70vw; max-width: 350px; animation: heroFade 2.6s ease-in-out forwards; }
+        .splash-text { margin-top: 20px; font-size: 2.5rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
 
         @keyframes heroFade {
             0% { transform: scale(0.8); opacity: 0; filter: blur(15px); }
@@ -61,72 +43,54 @@
             75% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.05); opacity: 0; filter: blur(10px); }
         }
-
         @keyframes textFade {
             0% { transform: translateY(10px); opacity: 0; }
             35% { transform: translateY(0); opacity: 1; }
             75% { opacity: 1; }
             100% { opacity: 0; }
         }
-
         .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
-        /* 2. APP UI TRANSITION */
+        /* MAIN CARD */
         .app-card {
             background: var(--glass-card);
             padding: 2.5rem 1.5rem; border-radius: 50px;
             width: 92%; max-width: 380px; text-align: center;
             border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 40px 100px rgba(0,0,0,1);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
             transform: translateY(80px); opacity: 0;
             transition: all 1.2s cubic-bezier(0.15, 1, 0.3, 1) 2.3s;
         }
         .loaded .app-card { transform: translateY(0); opacity: 1; }
 
         .mini-logo { width: 60px; height: 60px; margin-bottom: 12px; object-fit: contain; }
-        
-        /* Updated Chiquita Style */
-        .chiquita-text { 
-            font-size: 1.6rem; 
-            font-weight: 900; 
-            color: var(--pulp-lime); 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            text-shadow: 0 0 10px rgba(166, 226, 46, 0.3);
-        }
-        
+        .chiquita-text { font-size: 1.6rem; font-weight: 900; color: var(--pulp-lime); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
         .checker-title { font-weight: 900; letter-spacing: 4px; color: #fff; opacity: 0.6; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 30px; }
 
-        .input-wrapper {
-            background: rgba(255,255,255,0.03);
-            border: 2px solid rgba(166, 226, 46, 0.2);
-            border-radius: 25px; padding: 20px; margin-bottom: 25px;
-        }
-        input {
-            border: none !important; text-align: center; letter-spacing: 12px;
-            font-weight: 900; font-size: 3.5rem !important; background: transparent !important;
-            color: #fff; width: 100%; outline: none; text-transform: uppercase;
-        }
+        /* INPUTS */
+        .input-wrapper { background: rgba(255,255,255,0.03); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 20px; margin-bottom: 25px; }
+        input { border: none !important; text-align: center; letter-spacing: 12px; font-weight: 900; font-size: 3.5rem !important; background: transparent !important; color: #fff; width: 100%; outline: none; text-transform: uppercase; }
 
-        .btn-main {
-            background: linear-gradient(135deg, var(--pulp-amber), #ff4500);
-            color: #fff; border-radius: 100px; padding: 18px; 
-            font-weight: 900; width: 100%; border: none; text-transform: uppercase;
-            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
-        }
+        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 18px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3); }
 
-        .result-display {
-            margin-top: 30px; padding: 25px; border-radius: 40px;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08);
-        }
+        /* RESULT BOX */
+        .result-display { margin-top: 30px; padding: 25px; border-radius: 40px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); position: relative; }
         .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
         .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
         .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
 
         #daysValue { font-size: 6rem; font-weight: 900; line-height: 1; }
         .label-sub { font-size: 0.75rem; opacity: 0.4; font-weight: 800; text-transform: uppercase; }
+
+        /* COPY BUTTON */
+        .btn-copy {
+            margin-top: 15px; background: rgba(255,255,255,0.1); border: none; 
+            color: #fff; border-radius: 12px; padding: 8px 15px; font-size: 0.7rem; 
+            font-weight: 800; text-transform: uppercase; transition: 0.3s;
+            display: none; width: fit-content; margin-left: auto; margin-right: auto;
+        }
+        .btn-copy:active { background: var(--pulp-lime); color: #000; }
 
         .shake { animation: shake 0.4s both; }
         @keyframes shake {
@@ -144,7 +108,6 @@
 
 <div class="app-card" id="appCard">
     <img src="edited-image.png" class="mini-logo" alt="Pulp Pro">
-    
     <div class="chiquita-text">Chiquita Banana</div>
     <div class="checker-title">Age Checker</div>
     
@@ -159,6 +122,8 @@
         <div id="daysValue">--</div>
         <div class="label-sub">Days from Harvest</div>
         <div id="dateText" style="font-size: 1.5rem; font-weight: 900; margin-top: 15px;">-- -- ----</div>
+        
+        <button id="copyBtn" class="btn-copy" onclick="copyDetails()">Copy Details</button>
     </div>
 </div>
 
@@ -177,6 +142,7 @@
         const label = document.getElementById('statusLabel');
         const daysVal = document.getElementById('daysValue');
         const dateTxt = document.getElementById('dateText');
+        const copyBtn = document.getElementById('copyBtn');
 
         const mChar = val.charCodeAt(0);
         const dChar = val.charCodeAt(1);
@@ -189,6 +155,7 @@
             box.className = 'result-display';
             label.innerText = "INVALID";
             daysVal.innerText = "ERR";
+            copyBtn.style.display = "none";
             return;
         }
 
@@ -203,10 +170,26 @@
         daysVal.innerText = diff;
         dateTxt.innerText = hDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
         box.className = 'result-display'; 
+        copyBtn.style.display = "block";
 
         if (diff > 31) { label.innerText = "TOO OLD"; box.classList.add('bg-old'); }
         else if (diff <= 21) { label.innerText = "PERFECT"; box.classList.add('bg-perfect'); }
         else { label.innerText = "ACCEPTABLE"; box.classList.add('bg-acceptable'); }
+    }
+
+    function copyDetails() {
+        const code = inputField.value.toUpperCase();
+        const days = document.getElementById('daysValue').innerText;
+        const date = document.getElementById('dateText').innerText;
+        const status = document.getElementById('statusLabel').innerText;
+        
+        const text = `Pulp Pro Report\nCode: ${code}\nStatus: ${status}\nDays: ${days}\nHarvest: ${date}`;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "COPIED!";
+            setTimeout(() => { btn.innerText = "COPY DETAILS"; }, 2000);
+        });
     }
 </script>
 </body>
