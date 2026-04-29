@@ -28,6 +28,7 @@
             --shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
+        /* High-Contrast Light Theme */
         body.light-theme {
             --bg-black: #f8f9fa;
             --drawer-bg: #ffffff;
@@ -380,13 +381,13 @@
 
     const inputField = document.getElementById('codeIn');
     
-    // Tweak 2: Any change (typing or deleting) kills the current result instantly
+    // Hide info instantly on typing or deleting
     inputField.addEventListener('input', () => { 
         document.getElementById('resBox').classList.add('hidden');
-        renderHistory(); // Update history visibility based on new box state
+        renderHistory(); 
     });
 
-    // Support "Checkmark" or "Enter" key on keyboard
+    // Handle "Checkmark" or "Enter" from mobile keyboard
     inputField.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -394,14 +395,12 @@
         }
     });
 
-    // Tweak 1: checkFruit now requires manual call (Calculate button or Enter)
     function checkFruit(historicalCode = null) {
         const val = historicalCode || inputField.value.toUpperCase();
         if (historicalCode) inputField.value = historicalCode;
         
         const box = document.getElementById('resBox');
 
-        // Validation logic
         if (val.length < 3) {
             box.classList.add('hidden');
             if(!historicalCode) triggerShake();
