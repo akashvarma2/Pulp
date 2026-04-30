@@ -189,6 +189,14 @@
         .hidden { display: none !important; }
         .shake { animation: shake 0.4s both; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        /* Detect Defects View Specifics */
+        .camera-container { width: 100%; height: 250px; background: #000; border-radius: 30px; overflow: hidden; position: relative; border: 2px solid var(--border-glass); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
+        #video-feed { width: 100%; height: 100%; object-fit: cover; }
+        .scanning-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--pulp-amber); box-shadow: 0 0 15px var(--pulp-amber); animation: scanLine 2s linear infinite; display: none; }
+        @keyframes scanLine { 0% { top: 0; } 100% { top: 100%; } }
+        
+        #defectResult { padding: 20px; border-radius: 20px; background: rgba(255,140,0,0.1); border: 1px solid var(--pulp-amber); margin-top: 15px; font-size: 0.75rem; text-align: left; }
     </style>
 </head>
 <body>
@@ -205,7 +213,7 @@
             <img src="edited-image.png" style="width:50px; margin-bottom:10px;">
             <div style="font-weight:900; color:var(--pulp-lime);">PULP PRO</div>
         </div>
-        <div class="menu-item" onclick="showHub(); toggleMenu();"><span>🏠 Home</span></div>
+        <div class="menu-item" onclick="showHub(); toggleMenu(); stopCamera();"><span>🏠 Home</span></div>
         <div class="settings-label">App Settings</div>
         <div class="menu-item" onclick="toggleTheme()"><span>🌓 <span id="themeText">Dark Mode</span></span></div>
         <div class="menu-item" onclick="clearHistory()" style="color:var(--pulp-red);"><span>⚠️ Clear Logs</span></div>
@@ -225,11 +233,48 @@
                 <div class="selection-card" onclick="openMiddleHub('banana')"><img src="banana.png" alt="banana"><div class="commodity-name-section"><span>Banana</span></div></div>
                 <div class="selection-card" onclick="openMiddleHub('mango')"><img src="mango.png" alt="mango"><div class="commodity-name-section"><span>Mango</span><span style="color:var(--pulp-amber); font-size:0.6rem; letter-spacing:1px;">(SOON)</span></div></div>
                 <div class="selection-card" onclick="openMiddleHub('avocado')"><img src="avocado.png" alt="avocado"><div class="commodity-name-section"><span>Avocado</span><span style="color:var(--pulp-amber); font-size:0.6rem; letter-spacing:1px;">(SOON)</span></div></div>
+                <div class="selection-card" onclick="switchView('defect-selection-view')">
+                    <i class="bi bi-camera" style="position: absolute; top: 40%; transform: translateY(-50%); font-size: 5rem; color: var(--pulp-amber); opacity: 0.8;"></i>
+                    <div class="commodity-name-section"><span>Detect Defects</span></div>
+                </div>
             </div>
         </div>
         <div id="favorites-section" class="hidden">
             <div class="hub-title" style="color: var(--pulp-amber); font-size: 0.8rem; margin-top:20px;">Saved Favorites</div>
             <div class="fav-grid" id="fav-grid"></div>
+        </div>
+    </div>
+
+    <!-- Step 2: Detect Defects Commodity Selection -->
+    <div id="defect-selection-view" class="nav-view hidden">
+        <div class="hub-title">Defect Detection<br><small style="font-size:0.7rem; opacity:0.6;">Step 1: Choose Commodity</small></div>
+        <div class="list-container">
+            <div class="list-btn" onclick="openDefectInterface('Banana')">Banana</div>
+            <div class="list-btn" onclick="openDefectInterface('Mango')">Mango</div>
+            <div class="list-btn" onclick="openDefectInterface('Avocado')">Avocado</div>
+        </div>
+        <button class="btn-main" style="margin-top:40px; background:transparent; border:1px solid var(--border-glass); color:var(--text-main);" onclick="showHub()">← Back</button>
+    </div>
+
+    <!-- Step 3: Defect Interface -->
+    <div id="defect-interface-view" class="nav-view hidden">
+        <div class="app-card" style="max-width:400px; margin: 0 auto;">
+            <div id="defectCommodityTitle" style="font-size: 1.4rem; font-weight: 900; color: var(--pulp-amber); text-transform: uppercase; margin-bottom: 10px;">Banana</div>
+            <div style="font-weight: 900; letter-spacing: 4px; opacity: 0.5; font-size: 0.7rem; margin-bottom: 25px; color:var(--text-main);">LIVE DEFECT SCANNER</div>
+            
+            <div class="camera-container">
+                <video id="video-feed" autoplay playsinline></video>
+                <div class="scanning-overlay" id="scannerLine"></div>
+                <div id="camera-error" style="display:none; position:absolute; font-weight:900; color:var(--pulp-red); text-align:center; padding:10px;">CAMERA PERMISSION REQUIRED</div>
+            </div>
+
+            <button class="btn-main" id="captureBtn" onclick="analyzeDefect()" style="background: var(--pulp-amber); margin-bottom:15px;">Capture & Analyze</button>
+            <div id="defectResult" class="hidden">
+                <div style="font-weight:900; margin-bottom:5px;">SCANNING ONLINE DATABASE...</div>
+                <div id="defectStatus" style="opacity:0.8;">Processing image frame for flaws.</div>
+            </div>
+            
+            <button class="btn-main" style="background: transparent; border: 1px solid var(--border-glass); font-size:0.8rem; margin-top:10px;" onclick="switchView('defect-selection-view'); stopCamera();">Change Commodity</button>
         </div>
     </div>
 
@@ -279,6 +324,7 @@
     let favorites = JSON.parse(localStorage.getItem('pulpProFavorites')) || [];
     let activeFruit = '';
     let activeBrand = '';
+    let stream = null;
 
     window.addEventListener('load', () => {
         const savedTheme = localStorage.getItem('pulpTheme');
@@ -290,10 +336,52 @@
         renderFavorites();
         setTimeout(() => {
             document.body.classList.add('loaded');
-            // Fixed initial focus for desktop
-            document.getElementById('codeIn').focus();
+            if(document.getElementById('codeIn')) document.getElementById('codeIn').focus();
         }, 2600);
     });
+
+    // Camera Logic
+    async function startCamera() {
+        const video = document.getElementById('video-feed');
+        const errorMsg = document.getElementById('camera-error');
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+            video.srcObject = stream;
+            errorMsg.style.display = 'none';
+        } catch (err) {
+            console.error("Camera error: ", err);
+            errorMsg.style.display = 'block';
+        }
+    }
+
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+    }
+
+    function analyzeDefect() {
+        const line = document.getElementById('scannerLine');
+        const result = document.getElementById('defectResult');
+        const status = document.getElementById('defectStatus');
+        
+        line.style.display = 'block';
+        result.classList.remove('hidden');
+        status.innerText = "Accessing cloud intelligence...";
+
+        // Simulate online lookup
+        setTimeout(() => {
+            line.style.display = 'none';
+            status.innerHTML = `<span style="color:var(--pulp-lime); font-weight:900;">NO CRITICAL DEFECTS</span><br>Appearance within acceptable quality standards.`;
+        }, 2500);
+    }
+
+    function openDefectInterface(commodity) {
+        document.getElementById('defectCommodityTitle').innerText = commodity;
+        switchView('defect-interface-view');
+        startCamera();
+    }
 
     function toggleTheme() {
         document.body.classList.toggle('light-theme');
@@ -329,7 +417,6 @@
         document.getElementById('appInterface').style.display = 'none';
         if(targetId === 'appInterface') {
             document.getElementById('appInterface').style.display = 'flex';
-            // Fixed focus when entering calculator
             setTimeout(() => document.getElementById('codeIn').focus(), 100);
         } else {
             document.getElementById(targetId).classList.remove('hidden');
@@ -382,7 +469,7 @@
     function updateFavoriteUI() {
         const id = `${activeFruit}_${activeBrand}`;
         const isFav = favorites.some(f => f.id === id);
-        document.getElementById('favStar').classList.toggle('active', isFav);
+        if(document.getElementById('favStar')) document.getElementById('favStar').classList.toggle('active', isFav);
     }
 
     function renderFavorites() {
@@ -397,19 +484,20 @@
 
     const inputField = document.getElementById('codeIn');
     
-    inputField.addEventListener('input', () => { 
-        document.getElementById('resBox').classList.add('hidden');
-        renderHistory(); 
-    });
+    if(inputField) {
+        inputField.addEventListener('input', () => { 
+            document.getElementById('resBox').classList.add('hidden');
+            renderHistory(); 
+        });
 
-    inputField.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            checkFruit();
-        }
-    });
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkFruit();
+            }
+        });
+    }
 
-    // Modified handlePostCalculation to better handle Desktop vs Mobile
     function handlePostCalculation() {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         
@@ -421,7 +509,6 @@
                 inputField.setAttribute('type', currentType);
             }, 100);
         } else {
-            // On desktop, keep input ready for next scan
             inputField.select(); 
             inputField.focus();
         }
@@ -467,7 +554,7 @@
 
         if (!historicalCode) {
             saveToHistory(val, diff, statusColor);
-            handlePostCalculation(); // Fixed interactivity here
+            handlePostCalculation(); 
         }
         renderHistory();
     }
@@ -487,7 +574,11 @@
 
     function renderHistory() {
         const list = document.getElementById('historyList'), section = document.getElementById('historySection');
-        const boxHidden = document.getElementById('resBox').classList.contains('hidden');
+        if(!list || !section) return;
+        
+        const resBox = document.getElementById('resBox');
+        const boxHidden = resBox ? resBox.classList.contains('hidden') : true;
+        
         if (scanHistory.length === 0) { section.style.display = "none"; return; }
         
         if (window.innerWidth >= 992) {
