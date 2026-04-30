@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pulp Pro - Beta 1.4</title>
+    <title>Pulp Pro - Version 1.4-BETA</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,12 +24,10 @@
             min-height: 100vh; margin: 0; color: var(--text-main); overflow-x: hidden; padding: 20px;
         }
 
-        /* Nav Views */
         .nav-view { max-width: 900px; width: 100%; text-align: center; margin-top: 80px; }
         .hidden { display: none !important; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
 
-        /* Grid System */
         .selection-grid { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
         @media (min-width: 768px) { .selection-grid { flex-direction: row; justify-content: center; flex-wrap: wrap; } }
 
@@ -41,143 +39,134 @@
         }
         .selection-card:hover { border-color: var(--pulp-lime); transform: translateY(-5px); }
         .selection-card i.main-icon { position: absolute; top: 40%; transform: translateY(-50%); font-size: 5rem; color: var(--pulp-lime); opacity: 0.8; }
+        
         .commodity-name-section {
             width: 100%; height: 20%; display: flex; flex-direction: column; align-items: center; 
             justify-content: center; background: var(--glass-card); z-index: 2; padding-bottom: 15px;
         }
         .commodity-name-section span { font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Camera View */
-        #camera-container { width: 100%; max-width: 400px; margin: 0 auto; position: relative; border-radius: 30px; overflow: hidden; border: 2px solid var(--pulp-lime); }
-        #video-feed { width: 100%; height: auto; transform: scaleX(1); }
-        .camera-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px dashed rgba(166, 226, 46, 0.4); pointer-events: none; }
-        
-        /* AI Result Card */
-        .ai-card { background: var(--glass-card); border-radius: 40px; padding: 2rem; border: 1px solid var(--border-glass); text-align: left; margin-top: 20px; }
-        .defect-title { color: var(--pulp-red); font-weight: 900; font-size: 1.5rem; text-transform: uppercase; margin-bottom: 10px; }
-        .ai-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--pulp-lime); font-weight: 900; }
+        /* Camera & Results Styles */
+        #camera-container { width: 100%; max-width: 450px; margin: 0 auto; border-radius: 35px; overflow: hidden; border: 2px solid var(--pulp-lime); position: relative; }
+        video { width: 100%; height: auto; }
+        .ai-result-card { background: var(--glass-card); border: 1px solid var(--border-glass); border-radius: 40px; padding: 25px; text-align: left; margin-top: 20px; }
+        .result-label { font-size: 0.65rem; color: var(--pulp-lime); font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
+        .result-text { font-size: 1rem; color: var(--text-main); margin-bottom: 20px; font-weight: 400; }
+        .result-title { font-size: 1.6rem; color: var(--pulp-red); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; }
 
-        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 15px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; margin-top: 20px; }
+        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border-radius: 100px; padding: 18px; font-weight: 900; width: 100%; border: none; text-transform: uppercase; margin-top: 20px; }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-glass); color: var(--text-dim); border-radius: 100px; padding: 12px; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- Home Hub -->
-    <div id="fruit-hub" class="nav-view">
-        <div class="hub-title">Select Action</div>
+    <!-- Main Grid -->
+    <div id="main-hub" class="nav-view">
+        <div class="hub-title">Select Commodity</div>
         <div class="selection-grid">
-            <div class="selection-card" onclick="openAgeChecker()">
-                <i class="bi bi-calendar-check main-icon"></i>
-                <div class="commodity-name-section"><span>Age Checker</span></div>
+            <div class="selection-card" onclick="alert('Banana Logic')">
+                <i class="bi bi- recursive main-icon"></i>
+                <div class="commodity-name-section"><span>Banana</span></div>
             </div>
-            <div class="selection-card" onclick="openDefectHub()">
+            <div class="selection-card" onclick="alert('Mango Logic')">
+                <i class="bi bi-sun main-icon"></i>
+                <div class="commodity-name-section"><span>Mango</span></div>
+            </div>
+            <div class="selection-card" onclick="alert('Avocado Logic')">
+                <i class="bi bi-shield-check main-icon"></i>
+                <div class="commodity-name-section"><span>Avocado</span></div>
+            </div>
+            <!-- THE FOURTH OPTION -->
+            <div class="selection-card" onclick="openDefectPicker()" style="border-color: var(--pulp-amber);">
                 <i class="bi bi-camera main-icon" style="color: var(--pulp-amber);"></i>
                 <div class="commodity-name-section"><span>Detect Defects</span></div>
             </div>
         </div>
     </div>
 
-    <!-- Defect Commodity Selection -->
-    <div id="defect-hub" class="nav-view hidden">
-        <div class="hub-title">Detect Defect In:</div>
+    <!-- Defect Commodity Picker -->
+    <div id="defect-picker" class="nav-view hidden">
+        <div class="hub-title">Target Fruit</div>
         <div class="selection-grid">
-            <div class="selection-card" style="height: 200px; width: 220px;" onclick="startCamera('Banana')">
+            <div class="selection-card" style="height: 180px;" onclick="initCamera('Banana')">
                 <div class="commodity-name-section" style="height: 100%;"><span>Banana</span></div>
             </div>
-            <div class="selection-card" style="height: 200px; width: 220px;" onclick="startCamera('Mango')">
+            <div class="selection-card" style="height: 180px;" onclick="initCamera('Mango')">
                 <div class="commodity-name-section" style="height: 100%;"><span>Mango</span></div>
             </div>
-            <div class="selection-card" style="height: 200px; width: 220px;" onclick="startCamera('Avocado')">
+            <div class="selection-card" style="height: 180px;" onclick="initCamera('Avocado')">
                 <div class="commodity-name-section" style="height: 100%;"><span>Avocado</span></div>
             </div>
         </div>
-        <button class="btn-main" style="background:transparent; border:1px solid var(--border-glass);" onclick="showHub()">← Back</button>
+        <button class="btn-secondary" onclick="showView('main-hub')">Cancel</button>
     </div>
 
-    <!-- Camera Interface -->
-    <div id="camera-interface" class="nav-view hidden">
-        <div class="hub-title" id="camTitle">Analyze Fruit</div>
+    <!-- Camera View -->
+    <div id="camera-view" class="nav-view hidden">
+        <div class="hub-title" id="cam-header">Scan</div>
         <div id="camera-container">
-            <video id="video-feed" autoplay playsinline></video>
-            <div class="camera-overlay"></div>
+            <video id="webcam" autoplay playsinline></video>
         </div>
-        <button class="btn-main" onclick="capturePhoto()" id="shutterBtn">Capture & Analyze</button>
-        <button class="btn-main" style="background:transparent; border:none; opacity:0.5;" onclick="openDefectHub()">Cancel</button>
+        <button class="btn-main" onclick="analyzeDefect()">Capture & Identify</button>
+        <button class="btn-secondary" onclick="openDefectPicker()">Back</button>
     </div>
 
-    <!-- Result Interface -->
-    <div id="result-interface" class="nav-view hidden">
-        <div class="hub-title">AI Analysis</div>
-        <canvas id="photo-canvas" class="hidden"></canvas>
-        <div class="ai-card">
-            <div class="ai-label">IDENTIFIED DEFECT</div>
-            <div class="defect-title" id="resName">Analyzing...</div>
+    <!-- Results View -->
+    <div id="results-view" class="nav-view hidden">
+        <div class="hub-title">Analysis Complete</div>
+        <div class="ai-result-card">
+            <div class="result-label">DETECTED ISSUE</div>
+            <div class="result-title" id="res-name">Processing...</div>
             
-            <div class="ai-label" style="margin-top:20px;">PROBABLE CAUSE</div>
-            <p id="resCause" style="font-size: 0.9rem; opacity: 0.8;">Processing image data with AI model...</p>
+            <div class="result-label">PROBABLE CAUSE</div>
+            <div class="result-text" id="res-cause">...</div>
 
-            <div class="ai-label" style="margin-top:20px;">AI RECOMMENDATION</div>
-            <p id="resAdvice" style="font-size: 0.9rem; opacity: 0.8;">Waiting for server response...</p>
+            <div class="result-label">AI RECOMMENDATION</div>
+            <div class="result-text" id="res-advice">...</div>
         </div>
-        <button class="btn-main" onclick="openDefectHub()">New Scan</button>
-        <button class="btn-main" style="background:transparent; border:1px solid var(--border-glass);" onclick="showHub()">Home</button>
+        <button class="btn-main" onclick="showView('main-hub')">Done</button>
     </div>
 
     <script>
-        let currentStream = null;
-        let activeCommodity = "";
+        let stream = null;
+        let selectedFruit = "";
 
-        function switchView(id) {
+        function showView(id) {
             document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
+            if(id !== 'camera-view' && stream) stopCamera();
         }
 
-        function showHub() { switchView('fruit-hub'); stopCamera(); }
-        function openDefectHub() { switchView('defect-hub'); stopCamera(); }
-        function openAgeChecker() { alert("Age Checker logic from Master Code 1.3 would trigger here."); }
+        function openDefectPicker() { showView('defect-picker'); }
 
-        async function startCamera(commodity) {
-            activeCommodity = commodity;
-            document.getElementById('camTitle').innerText = `Scan ${commodity}`;
-            switchView('camera-interface');
-            
+        async function initCamera(fruit) {
+            selectedFruit = fruit;
+            document.getElementById('cam-header').innerText = `Scan ${fruit}`;
+            showView('camera-view');
             try {
-                currentStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment' }, 
-                    audio: false 
-                });
-                document.getElementById('video-feed').srcObject = currentStream;
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('webcam').srcObject = stream;
             } catch (err) {
-                alert("Camera access denied or not available.");
-                openDefectHub();
+                alert("Camera access is required for this feature.");
+                showView('defect-picker');
             }
         }
 
         function stopCamera() {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
             }
         }
 
-        function capturePhoto() {
-            const video = document.getElementById('video-feed');
-            const canvas = document.getElementById('photo-canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            stopCamera();
-            switchView('result-interface');
-            simulateAI();
-        }
-
-        function simulateAI() {
-            // Placeholder for real AI API call
+        function analyzeDefect() {
+            showView('results-view');
+            // Simulating AI Response for the demo
             setTimeout(() => {
-                document.getElementById('resName').innerText = "Crown Rot Detected";
-                document.getElementById('resCause').innerText = "Fungal infection typically caused by moisture at the cut crown during packing.";
-                document.getElementById('resAdvice').innerText = "Ensure proper crown treatment with fungicide and maintain stable temperature during transport. Check humidity levels in container.";
-            }, 1500);
+                document.getElementById('res-name').innerText = "Anthracnose";
+                document.getElementById('res-cause').innerText = "Fungal infection (Colletotrichum musae) often appearing as small, circular, dark spots that expand as the fruit ripens.";
+                document.getElementById('res-advice').innerText = "Ensure careful handling to avoid skin injuries. Improve post-harvest temperature management and maintain proper sanitation in packing areas.";
+            }, 800);
         }
     </script>
 </body>
