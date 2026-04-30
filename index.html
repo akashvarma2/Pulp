@@ -288,7 +288,11 @@
         }
         renderHistory();
         renderFavorites();
-        setTimeout(() => document.body.classList.add('loaded'), 2600);
+        setTimeout(() => {
+            document.body.classList.add('loaded');
+            // Fixed initial focus for desktop
+            document.getElementById('codeIn').focus();
+        }, 2600);
     });
 
     function toggleTheme() {
@@ -325,6 +329,8 @@
         document.getElementById('appInterface').style.display = 'none';
         if(targetId === 'appInterface') {
             document.getElementById('appInterface').style.display = 'flex';
+            // Fixed focus when entering calculator
+            setTimeout(() => document.getElementById('codeIn').focus(), 100);
         } else {
             document.getElementById(targetId).classList.remove('hidden');
         }
@@ -399,19 +405,26 @@
     inputField.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            forceHideKeyboard();
             checkFruit();
         }
     });
 
-    function forceHideKeyboard() {
-        inputField.blur();
-        const currentType = inputField.getAttribute('type');
-        inputField.setAttribute('type', 'button'); 
-        setTimeout(() => {
-            inputField.setAttribute('type', currentType);
+    // Modified forceHideKeyboard to better handle Desktop vs Mobile
+    function handlePostCalculation() {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        if (isMobile) {
             inputField.blur();
-        }, 100);
+            const currentType = inputField.getAttribute('type');
+            inputField.setAttribute('type', 'button'); 
+            setTimeout(() => {
+                inputField.setAttribute('type', currentType);
+            }, 100);
+        } else {
+            // On desktop, keep input ready for next scan
+            inputField.select(); 
+            inputField.focus();
+        }
     }
 
     function checkFruit(historicalCode = null) {
@@ -424,10 +437,6 @@
             box.classList.add('hidden');
             if(!historicalCode) triggerShake();
             return;
-        }
-
-        if (!historicalCode) {
-            forceHideKeyboard();
         }
 
         const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
@@ -456,7 +465,10 @@
         else if (diff <= 21) { label.innerText = "PERFECT"; box.className = 'result-display bg-perfect'; statusColor = "#a6e22e"; }
         else { label.innerText = "ACCEPTABLE"; box.className = 'result-display bg-acceptable'; statusColor = "#ff8c00"; }
 
-        if (!historicalCode) saveToHistory(val, diff, statusColor);
+        if (!historicalCode) {
+            saveToHistory(val, diff, statusColor);
+            handlePostCalculation(); // Fixed interactivity here
+        }
         renderHistory();
     }
 
