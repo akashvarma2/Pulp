@@ -50,35 +50,36 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* Splash Screen - Now fades automatically */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1s ease-in-out, visibility 1s;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
-        .splash-logo { width: auto; height: auto; max-width: 80%; max-height: 40vh; object-fit: contain; animation: heroFade 2.6s ease-in-out forwards; }
-        .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
+        .splash-logo { width: auto; height: auto; max-width: 80%; max-height: 40vh; object-fit: contain; animation: heroFade 2.2s ease-in-out forwards; }
+        .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.2s ease-in-out forwards; }
 
         @keyframes heroFade {
             0% { transform: scale(0.8); opacity: 0; filter: blur(15px); }
-            35% { transform: scale(1); opacity: 1; filter: blur(0px); }
-            75% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.05); opacity: 0; filter: blur(10px); }
+            30% { transform: scale(1); opacity: 1; filter: blur(0px); }
+            80% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.02); opacity: 0; filter: blur(5px); }
         }
         @keyframes textFade {
             0% { transform: translateY(10px); opacity: 0; }
-            35% { transform: translateY(0); opacity: 1; }
-            75% { opacity: 1; }
+            30% { transform: translateY(0); opacity: 1; }
+            80% { opacity: 1; }
             100% { opacity: 0; }
         }
-        /* Reveal class added by JS */
-        body.loaded #splash-screen { opacity: 0; visibility: hidden; }
+        
+        body.loaded #splash-screen { opacity: 0; visibility: hidden; pointer-events: none; }
 
         #menu-trigger {
             position: fixed; top: 20px; left: 20px; width: 44px; height: 44px;
             background: var(--input-bg); border-radius: 12px; z-index: 9900;
             display: flex; align-items: center; justify-content: center; opacity: 0;
-            transition: all 0.5s ease 2.6s;
+            transition: all 0.5s ease;
             border: 1px solid var(--border-glass);
         }
         body.loaded #menu-trigger { opacity: 1; }
@@ -192,7 +193,7 @@
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
-<body>
+<body class="dark-theme"> <!-- Theme pre-applied to prevent white flash -->
 
     <div id="splash-screen">
         <img src="edited-image.png" class="splash-logo">
@@ -268,43 +269,32 @@
     </div>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
-        });
-    }
+    // 1. FORCED INITIALIZATION - Runs as soon as script loads
+    (function initApp() {
+        // Apply theme immediately
+        const savedTheme = localStorage.getItem('pulpTheme') || 'dark';
+        document.body.className = (savedTheme === 'light' ? 'light-theme' : 'dark-theme');
+        
+        // Force reveal after splash animation duration (2.2s)
+        setTimeout(() => {
+            document.body.classList.add('loaded');
+            console.log("Pulp Pro: App Force-Revealed");
+        }, 2200);
+    })();
 
     let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
     let favorites = JSON.parse(localStorage.getItem('pulpProFavorites')) || [];
     let activeFruit = '';
     let activeBrand = '';
 
-    // --- REVEAL LOGIC FIX ---
-    function revealApp() {
-        if (!document.body.classList.contains('loaded')) {
-            document.body.classList.add('loaded');
-        }
-    }
-
-    // Safety fallback: Reveal app after 4 seconds regardless of load event
-    setTimeout(revealApp, 4000);
-
-    window.addEventListener('load', () => {
-        const savedTheme = localStorage.getItem('pulpTheme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-            document.getElementById('themeText').innerText = 'Light Mode';
-        } else {
-            document.body.classList.remove('light-theme');
-            document.getElementById('themeText').innerText = 'Dark Mode';
-        }
+    // Standard load events for memory/render
+    window.addEventListener('DOMContentLoaded', () => {
         renderHistory();
         renderFavorites();
         
-        // standard reveal
-        setTimeout(revealApp, 2500); 
+        const isLight = document.body.classList.contains('light-theme');
+        document.getElementById('themeText').innerText = isLight ? 'Light Mode' : 'Dark Mode';
     });
-    // --- END REVEAL FIX ---
 
     function toggleTheme() {
         document.body.classList.toggle('light-theme');
@@ -396,7 +386,6 @@
     }
 
     const inputField = document.getElementById('codeIn');
-    
     inputField.addEventListener('input', () => { 
         document.getElementById('resBox').classList.add('hidden');
         renderHistory(); 
@@ -405,45 +394,22 @@
     inputField.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            forceHideKeyboard();
+            inputField.blur();
             checkFruit();
         }
     });
-
-    function forceHideKeyboard() {
-        inputField.blur();
-        const currentType = inputField.getAttribute('type');
-        inputField.setAttribute('type', 'button'); 
-        setTimeout(() => {
-            inputField.setAttribute('type', currentType);
-            inputField.blur();
-        }, 100);
-    }
 
     function checkFruit(historicalCode = null) {
         const val = historicalCode || inputField.value.toUpperCase();
         if (historicalCode) inputField.value = historicalCode;
         
         const box = document.getElementById('resBox');
-
-        if (val.length < 3) {
-            box.classList.add('hidden');
-            if(!historicalCode) triggerShake();
-            return;
-        }
-
-        if (!historicalCode) {
-            forceHideKeyboard();
-        }
+        if (val.length < 3) { box.classList.add('hidden'); if(!historicalCode) triggerShake(); return; }
 
         const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
         const isValid = (mChar >= 65 && mChar <= 76) && (dChar >= 65 && dChar <= 90) && (yDigit === '1' || yDigit === '2');
 
-        if (!isValid) {
-            box.classList.add('hidden');
-            triggerShake();
-            return;
-        }
+        if (!isValid) { box.classList.add('hidden'); triggerShake(); return; }
 
         const now = new Date(), m = mChar - 65;
         let d = dChar - 64; if (yDigit === '2') d += 26;
@@ -497,50 +463,18 @@
         const days = document.getElementById('daysValue').innerText;
         const date = document.getElementById('dateText').innerText;
         const code = document.getElementById('codeIn').value.toUpperCase();
-        
-        if (document.getElementById('resBox').classList.contains('hidden')) return;
-
         const plainText = `Pulp Pro Report\nCode: ${code}\nAge: ${days} Days\nHarvest Date: ${date}`;
-
-        const htmlText = `
-            <div style="font-family: sans-serif;">
-                <p><strong>Pulp Pro Report</strong></p>
-                <p>Code: <span style="color: #ff4d4d; font-weight: bold;">${code}</span></p>
-                <p>Age: <span style="color: #ff4d4d; font-weight: bold;">${days} Days</span></p>
-                <p>Harvest Date: ${date}</p>
-            </div>
-        `;
-
-        try {
-            const blobHTML = new Blob([htmlText], { type: 'text/html' });
-            const blobText = new Blob([plainText], { type: 'text/plain' });
-            
-            const data = [new ClipboardItem({
-                'text/plain': blobText,
-                'text/html': blobHTML
-            })];
-
-            navigator.clipboard.write(data).then(() => {
-                showCopySuccess();
-            }).catch(() => {
-                navigator.clipboard.writeText(plainText).then(showCopySuccess);
-            });
-        } catch (err) {
-            navigator.clipboard.writeText(plainText).then(showCopySuccess);
-        }
+        
+        navigator.clipboard.writeText(plainText).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.classList.add('success');
+            btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
+            setTimeout(() => {
+                btn.classList.remove('success');
+                btn.innerHTML = `<i class="bi bi-clipboard"></i> **COPY**`;
+            }, 2000);
+        });
     }
-
-    function showCopySuccess() {
-        const btn = document.getElementById('copyBtn');
-        btn.classList.add('success');
-        btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
-        setTimeout(() => {
-            btn.classList.remove('success');
-            btn.innerHTML = `<i class="bi bi-clipboard"></i> **COPY**`;
-        }, 2000);
-    }
-
-    function clearHistory() { if(confirm("Wipe logs?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); } }
 </script>
 </body>
 </html>
