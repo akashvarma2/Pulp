@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pulp Pro - Chrome Test</title>
+    <title>Pulp Pro</title>
     
     <link rel="manifest" href="manifest.json">
     
@@ -50,22 +50,12 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- CHROME FAILSAFE START --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 1s ease-in-out, visibility 1s;
-            /* This forces the splash screen to hide even if JS is blocked */
-            animation: chromeFailsafe 0.5s forwards;
-            animation-delay: 3.5s; 
         }
-
-        @keyframes chromeFailsafe {
-            to { opacity: 0; visibility: hidden; pointer-events: none; }
-        }
-        /* --- CHROME FAILSAFE END --- */
-
         .splash-logo { width: auto; height: auto; max-width: 80%; max-height: 40vh; object-fit: contain; animation: heroFade 2.6s ease-in-out forwards; }
         .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
 
@@ -219,6 +209,8 @@
         <div class="settings-label">App Settings</div>
         <div class="menu-item" onclick="toggleTheme()"><span>🌓 <span id="themeText">Dark Mode</span></span></div>
         <div class="menu-item" onclick="clearHistory()" style="color:var(--pulp-red);"><span>⚠️ Clear Logs</span></div>
+        <div class="menu-item" onclick="sendFeedback()"><span>💬 Send Feedback</span></div>
+        
         <div id="menu-fav-container">
             <div class="menu-item" onclick="toggleMenuFavs()"><span>⭐ Favorites</span><i class="bi bi-chevron-down" id="favChevron"></i></div>
             <div id="menu-fav-list"></div>
@@ -288,28 +280,16 @@
     let activeFruit = '';
     let activeBrand = '';
 
-    // --- CHROME DESKTOP FIX START ---
-    function initApp() {
+    window.addEventListener('load', () => {
         const savedTheme = localStorage.getItem('pulpTheme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-theme');
             document.getElementById('themeText').innerText = 'Light Mode';
-        } else {
-            document.body.classList.remove('light-theme');
-            document.getElementById('themeText').innerText = 'Dark Mode';
         }
         renderHistory();
         renderFavorites();
-        
-        // Use a timeout to ensure the hero animations finish before hiding splash
-        setTimeout(() => { 
-            document.body.classList.add('loaded'); 
-        }, 2600);
-    }
-
-    // This listener triggers as soon as HTML is loaded, bypassing the image-hang bug
-    document.addEventListener('DOMContentLoaded', initApp);
-    // --- CHROME DESKTOP FIX END ---
+        setTimeout(() => document.body.classList.add('loaded'), 2600);
+    });
 
     function toggleTheme() {
         document.body.classList.toggle('light-theme');
@@ -329,6 +309,15 @@
         list.classList.toggle('show');
         icon.classList.toggle('bi-chevron-up');
         icon.classList.toggle('bi-chevron-down');
+    }
+
+    function sendFeedback() {
+        const theme = document.body.classList.contains('light-theme') ? 'Light' : 'Dark';
+        const historyCount = scanHistory.length;
+        const subject = encodeURIComponent("Pulp Pro App Feedback");
+        const body = encodeURIComponent(`Hi Team,\n\nI have some feedback for Pulp Pro:\n\n[Your feedback here]\n\n---\nApp Stats for Debugging:\nTheme: ${theme}\nLogged Scans: ${historyCount}\nPlatform: ${navigator.platform}`);
+        
+        window.location.href = `mailto:ar.varma@hotmail.com?subject=${subject}&body=${body}`;
     }
 
     function switchView(targetId) {
