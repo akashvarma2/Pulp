@@ -50,39 +50,37 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Splash Screen - Now fades automatically */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 1s ease-in-out, visibility 1s;
         }
-        .splash-logo { width: auto; height: auto; max-width: 80%; max-height: 40vh; object-fit: contain; animation: heroFade 2.2s ease-in-out forwards; }
-        .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.2s ease-in-out forwards; }
+        .splash-logo { width: auto; height: auto; max-width: 80%; max-height: 40vh; object-fit: contain; animation: heroFade 2.6s ease-in-out forwards; }
+        .splash-text { margin-top: 20px; font-size: 2rem; font-weight: 900; letter-spacing: 6px; color: var(--pulp-lime); text-transform: uppercase; text-shadow: 0 0 15px rgba(166, 226, 46, 0.5); opacity: 0; animation: textFade 2.6s ease-in-out forwards; }
 
         @keyframes heroFade {
             0% { transform: scale(0.8); opacity: 0; filter: blur(15px); }
-            30% { transform: scale(1); opacity: 1; filter: blur(0px); }
-            80% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.02); opacity: 0; filter: blur(5px); }
+            35% { transform: scale(1); opacity: 1; filter: blur(0px); }
+            75% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.05); opacity: 0; filter: blur(10px); }
         }
         @keyframes textFade {
             0% { transform: translateY(10px); opacity: 0; }
-            30% { transform: translateY(0); opacity: 1; }
-            80% { opacity: 1; }
+            35% { transform: translateY(0); opacity: 1; }
+            75% { opacity: 1; }
             100% { opacity: 0; }
         }
-        
-        body.loaded #splash-screen { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loaded #splash-screen { opacity: 0; visibility: hidden; }
 
         #menu-trigger {
             position: fixed; top: 20px; left: 20px; width: 44px; height: 44px;
             background: var(--input-bg); border-radius: 12px; z-index: 9900;
             display: flex; align-items: center; justify-content: center; opacity: 0;
-            transition: all 0.5s ease;
+            transition: all 0.5s ease 2.6s;
             border: 1px solid var(--border-glass);
         }
-        body.loaded #menu-trigger { opacity: 1; }
+        .loaded #menu-trigger { opacity: 1; }
         #menu-trigger span, #menu-trigger span::before, #menu-trigger span::after { content: ''; display: block; width: 20px; height: 2px; background: var(--text-main); position: absolute; }
         #menu-trigger span::before { top: -6px; }
         #menu-trigger span::after { bottom: -6px; }
@@ -111,7 +109,7 @@
         .menu-fav-item span { display: block; color: var(--pulp-lime); font-size: 0.55rem; opacity: 1; margin-top: 2px; font-weight: 900; }
 
         .nav-view { max-width: 900px; width: 100%; text-align: center; opacity: 0; transition: 0.5s; margin-top: 80px; }
-        body.loaded .nav-view { opacity: 1; }
+        .loaded .nav-view { opacity: 1; }
         .hub-title { font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; color: var(--pulp-lime); }
         
         .selection-grid-container { width: 100%; overflow: visible; padding-bottom: 40px; }
@@ -193,7 +191,7 @@
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
-<body class="dark-theme"> <!-- Theme pre-applied to prevent white flash -->
+<body>
 
     <div id="splash-screen">
         <img src="edited-image.png" class="splash-logo">
@@ -269,31 +267,29 @@
     </div>
 
 <script>
-    // 1. FORCED INITIALIZATION - Runs as soon as script loads
-    (function initApp() {
-        // Apply theme immediately
-        const savedTheme = localStorage.getItem('pulpTheme') || 'dark';
-        document.body.className = (savedTheme === 'light' ? 'light-theme' : 'dark-theme');
-        
-        // Force reveal after splash animation duration (2.2s)
-        setTimeout(() => {
-            document.body.classList.add('loaded');
-            console.log("Pulp Pro: App Force-Revealed");
-        }, 2200);
-    })();
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed', err));
+        });
+    }
 
     let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
     let favorites = JSON.parse(localStorage.getItem('pulpProFavorites')) || [];
     let activeFruit = '';
     let activeBrand = '';
 
-    // Standard load events for memory/render
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('load', () => {
+        const savedTheme = localStorage.getItem('pulpTheme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.getElementById('themeText').innerText = 'Light Mode';
+        } else {
+            document.body.classList.remove('light-theme');
+            document.getElementById('themeText').innerText = 'Dark Mode';
+        }
         renderHistory();
         renderFavorites();
-        
-        const isLight = document.body.classList.contains('light-theme');
-        document.getElementById('themeText').innerText = isLight ? 'Light Mode' : 'Dark Mode';
+        setTimeout(() => { document.body.classList.add('loaded'); }, 2500);
     });
 
     function toggleTheme() {
@@ -386,6 +382,7 @@
     }
 
     const inputField = document.getElementById('codeIn');
+    
     inputField.addEventListener('input', () => { 
         document.getElementById('resBox').classList.add('hidden');
         renderHistory(); 
@@ -394,7 +391,6 @@
     inputField.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            inputField.blur();
             checkFruit();
         }
     });
@@ -404,12 +400,26 @@
         if (historicalCode) inputField.value = historicalCode;
         
         const box = document.getElementById('resBox');
-        if (val.length < 3) { box.classList.add('hidden'); if(!historicalCode) triggerShake(); return; }
+
+        if (val.length < 3) {
+            box.classList.add('hidden');
+            if(!historicalCode) triggerShake();
+            return;
+        }
+
+        // Hide keyboard on mobile
+        if (!historicalCode) {
+            inputField.blur();
+        }
 
         const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
         const isValid = (mChar >= 65 && mChar <= 76) && (dChar >= 65 && dChar <= 90) && (yDigit === '1' || yDigit === '2');
 
-        if (!isValid) { box.classList.add('hidden'); triggerShake(); return; }
+        if (!isValid) {
+            box.classList.add('hidden');
+            triggerShake();
+            return;
+        }
 
         const now = new Date(), m = mChar - 65;
         let d = dChar - 64; if (yDigit === '2') d += 26;
@@ -460,21 +470,18 @@
     }
 
     function copyResult() {
-        const days = document.getElementById('daysValue').innerText;
-        const date = document.getElementById('dateText').innerText;
-        const code = document.getElementById('codeIn').value.toUpperCase();
-        const plainText = `Pulp Pro Report\nCode: ${code}\nAge: ${days} Days\nHarvest Date: ${date}`;
-        
-        navigator.clipboard.writeText(plainText).then(() => {
+        const days = document.getElementById('daysValue').innerText, date = document.getElementById('dateText').innerText, code = document.getElementById('codeIn').value.toUpperCase();
+        if (document.getElementById('resBox').classList.contains('hidden')) return;
+        const textToCopy = `Pulp Pro Report\nCode:${code}\nAge:${days} Days\nHarvest Date:${date}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
             const btn = document.getElementById('copyBtn');
             btn.classList.add('success');
             btn.innerHTML = `<i class="bi bi-check-lg"></i> **COPIED**`;
-            setTimeout(() => {
-                btn.classList.remove('success');
-                btn.innerHTML = `<i class="bi bi-clipboard"></i> **COPY**`;
-            }, 2000);
+            setTimeout(() => { btn.classList.remove('success'); btn.innerHTML = `<i class="bi bi-clipboard"></i> **COPY**`; }, 2000);
         });
     }
+
+    function clearHistory() { if(confirm("Wipe logs?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); } }
 </script>
 </body>
 </html>
