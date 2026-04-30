@@ -5,123 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pulp Pro</title>
     
-    <!-- CSS & Bootstrap Links stay the same -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --pulp-lime: #a6e22e; --pulp-amber: #ff8c00; --pulp-red: #ff4d4d;
-            --bg-black: #000000; --glass-card: rgba(22, 22, 24, 0.98);
-            --text-main: #ffffff; --border-glass: rgba(255, 255, 255, 0.1);
-            --input-bg: rgba(255, 255, 255, 0.03); --shadow: 0 40px 100px rgba(0,0,0,0.8);
+            --pulp-lime: #a6e22e; 
+            --pulp-amber: #ff8c00;
+            --bg-black: #000000;
+            --glass-card: rgba(22, 22, 24, 0.98);
+            --text-main: #ffffff;
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.03);
         }
 
         body { 
-            background-color: var(--bg-black); margin: 0; color: var(--text-main);
-            min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;
-            overflow-y: auto !important; /* Force scrollability on desktop Chrome */
+            background-color: var(--bg-black);
+            margin: 0;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            font-family: sans-serif;
+            overflow-y: auto !important; 
         }
 
+        /* The Splash Screen is now set to fade out automatically via CSS */
+        /* This ensures that even if JavaScript is blocked, the screen eventually disappears */
         #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bypass 2s forwards;
+            animation-delay: 1.5s;
         }
 
-        .splash-logo { width: auto; height: auto; max-width: 60%; max-height: 30vh; object-fit: contain; }
+        @keyframes bypass {
+            to { opacity: 0; visibility: hidden; }
+        }
 
-        .nav-view { width: 100%; max-width: 900px; text-align: center; padding: 100px 20px 40px; }
+        .splash-logo { max-width: 60%; height: auto; }
+
+        .nav-view { width: 100%; max-width: 600px; text-align: center; padding: 80px 20px; }
         .hidden { display: none !important; }
 
-        /* Button & Card Styles */
         .selection-card {
-            background: var(--glass-card); border: 2px solid var(--border-glass);
-            border-radius: 40px; width: 260px; height: 320px;
-            cursor: pointer; transition: 0.3s; box-shadow: var(--shadow); margin: 10px;
+            background: var(--glass-card);
+            border: 2px solid var(--border-glass);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 450px; padding-top: 80px; }
-        .app-card { background: var(--glass-card); padding: 2.5rem 1.5rem; border-radius: 50px; border: 1px solid var(--border-glass); }
-        .input-wrapper { background: var(--input-bg); border: 2px solid rgba(166, 226, 46, 0.2); border-radius: 25px; padding: 15px; }
-        input { background: transparent; border: none; color: #fff; font-size: 3rem; font-weight: 900; text-align: center; width: 100%; outline: none; }
-        .btn-main { background: linear-gradient(135deg, var(--pulp-amber), #ff4500); color: #fff; border: none; padding: 18px; border-radius: 100px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .selection-card:hover { border-color: var(--pulp-lime); }
+
+        .app-card {
+            background: var(--glass-card);
+            padding: 30px;
+            border-radius: 40px;
+            border: 1px solid var(--border-glass);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input {
+            background: var(--input-bg);
+            border: 2px solid var(--pulp-lime);
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            width: 100%;
+            border-radius: 20px;
+            margin: 20px 0;
+            outline: none;
+        }
+
+        .btn-main {
+            background: var(--pulp-amber);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            width: 100%;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+        }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen"><img src="edited-image.png" class="splash-logo"></div>
+    <div id="splash-screen">
+        <img src="edited-image.png" class="splash-logo" alt="Pulp Pro">
+    </div>
 
-    <!-- MAIN HUB -->
+    <!-- HUB -->
     <div id="fruit-hub" class="nav-view">
-        <h1 style="font-weight:900; color:var(--pulp-lime); letter-spacing:4px;">PULP PRO</h1>
-        <div style="display:flex; flex-wrap:wrap; justify-content:center;">
-            <div class="selection-card" onclick="openBrands()">
-                <div style="height:80%; display:flex; align-items:center; justify-content:center; font-size:4rem;">🍌</div>
-                <div style="font-weight:900;">BANANA</div>
-            </div>
+        <h1 style="color:var(--pulp-lime); font-weight:900;">PULP PRO</h1>
+        <div class="selection-card" onclick="openBrands()">
+            <div style="font-size:3rem;">🍌</div>
+            <div style="font-weight:900; margin-top:10px;">BANANA</div>
         </div>
     </div>
 
-    <!-- BRAND SELECT -->
+    <!-- BRANDS -->
     <div id="brand-hub" class="nav-view hidden">
-        <h2 style="font-weight:900; color:var(--pulp-lime);">SELECT BRAND</h2>
-        <button class="btn-main" style="max-width:300px; margin:10px auto;" onclick="openCalc('Chiquita')">Chiquita</button>
-        <br>
-        <button class="btn-main" style="max-width:300px; margin:10px auto; background:none; border:1px solid gray;" onclick="showHub()">← Back</button>
+        <h2 style="font-weight:900;">SELECT BRAND</h2>
+        <div class="selection-card" style="padding:20px;" onclick="openCalc('Chiquita')">Chiquita</div>
+        <button class="btn-main" style="background:none; border:1px solid #444;" onclick="showHub()">← Back</button>
     </div>
 
-    <!-- CALCULATOR -->
-    <div id="appInterface" class="app-container">
-        <div class="app-card">
-            <h3 id="activeBrandName" style="font-weight:900; color:var(--pulp-lime);">CHIQUITA</h3>
-            <div class="input-wrapper"><input type="text" id="codeIn" maxlength="3" placeholder="---" autofocus></div>
-            <button class="btn-main" onclick="checkFruit()" style="margin-top:20px;">Analyze</button>
-            <div id="resBox" class="hidden" style="margin-top:20px; padding:20px; border-radius:20px; border:1px solid var(--pulp-lime);">
-                <div id="daysValue" style="font-size:4rem; font-weight:900;">--</div>
-                <div id="dateText">--</div>
+    <!-- CALC -->
+    <div id="appInterface" class="nav-view hidden">
+        <div class="app-card" style="margin:auto;">
+            <h3 id="activeBrandName" style="color:var(--pulp-lime);">CHIQUITA</h3>
+            <input type="text" id="codeIn" maxlength="3" placeholder="---">
+            <button class="btn-main" onclick="checkFruit()">Analyze Code</button>
+            
+            <div id="resBox" class="result-box hidden">
+                <div id="daysValue" style="font-size:3.5rem; font-weight:900; color:var(--pulp-lime);">--</div>
+                <div id="dateText" style="opacity:0.7;">--</div>
             </div>
+            
             <button class="btn-main" style="margin-top:20px; background:none; border:none; opacity:0.5;" onclick="openBrands()">← Back</button>
         </div>
     </div>
 
     <script>
-        // CHROME FIX: Kill splash screen as soon as DOM is ready, don't wait for images.
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if(splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => { splash.style.display = 'none'; }, 500);
-                }
-            }, 1500); // Gives a 1.5s splash then FORCES reveal
-        });
+        // FORCED INITIALIZATION: No window.onload needed
+        function hideSplash() {
+            const s = document.getElementById('splash-screen');
+            if(s) s.style.display = 'none';
+        }
+
+        // Try to hide it immediately, then again after a short delay
+        setTimeout(hideSplash, 3000); 
 
         function switchView(id) {
             document.querySelectorAll('.nav-view').forEach(v => v.classList.add('hidden'));
-            document.getElementById('appInterface').style.display = 'none';
-            if(id === 'appInterface') document.getElementById('appInterface').style.display = 'flex';
-            else document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.remove('hidden');
+            window.scrollTo(0,0);
         }
 
         function showHub() { switchView('fruit-hub'); }
         function openBrands() { switchView('brand-hub'); }
         function openCalc(b) { 
             document.getElementById('activeBrandName').innerText = b.toUpperCase();
+            document.getElementById('codeIn').value = '';
+            document.getElementById('resBox').classList.add('hidden');
             switchView('appInterface'); 
         }
 
         function checkFruit() {
             const val = document.getElementById('codeIn').value.toUpperCase();
             if(val.length < 3) return;
-            const m = val.charCodeAt(0) - 65, d = val.charCodeAt(1) - 64, y = val.charAt(2);
-            let finalD = (y === '2') ? d + 26 : d;
+            
+            const m = val.charCodeAt(0) - 65;
+            const d = val.charCodeAt(1) - 64;
+            const y = val.charAt(2);
+            
+            let dayOffset = (y === '2') ? d + 26 : d;
             const now = new Date();
-            let hDate = new Date(now.getFullYear(), m, finalD);
+            let hDate = new Date(now.getFullYear(), m, dayOffset);
+            
             if(hDate > now) hDate.setFullYear(now.getFullYear() - 1);
+            
             const diff = Math.floor((now - hDate) / (1000*60*60*24));
             
             document.getElementById('resBox').classList.remove('hidden');
             document.getElementById('daysValue').innerText = diff + " DAYS";
-            document.getElementById('dateText').innerText = hDate.toDateString();
+            document.getElementById('dateText').innerText = hDate.toDateString().toUpperCase();
         }
     </script>
 </body>
