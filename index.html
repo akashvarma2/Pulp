@@ -29,7 +29,7 @@
             --shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
-        /* Desktop Fix: Removed strict overflow hidden */
+        /* Desktop Stability: Ensure body is always visible and scrollable */
         body { 
             background-color: var(--bg-black);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -40,9 +40,10 @@
             align-items: flex-start;
             justify-content: center;
             overflow-x: hidden;
-            overflow-y: auto; 
+            overflow-y: auto !important; 
         }
 
+        /* Splash Screen Fix: Added visibility property */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -50,27 +51,26 @@
             z-index: 9999;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease, visibility 1s;
+            align-items: center; justify-content: center;
+            transition: opacity 0.6s ease;
+            visibility: visible;
         }
 
         .splash-logo {
-            width: auto;
-            height: auto;
-            max-width: 80%;
-            max-height: 40vh;
+            width: auto; height: auto;
+            max-width: 80%; max-height: 40vh;
             object-fit: contain;
-            animation: heroFade 3s ease-in-out forwards;
+            animation: heroFade 2.5s ease-in-out forwards;
         }
 
         @keyframes heroFade {
-            0% { transform: scale(0.8); opacity: 0; filter: blur(20px); }
+            0% { transform: scale(0.8); opacity: 0; filter: blur(10px); }
             30% { transform: scale(1); opacity: 1; filter: blur(0px); }
-            70% { transform: scale(1); opacity: 1; filter: blur(0px); }
-            100% { transform: scale(1.1); opacity: 0; filter: blur(10px); }
+            80% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.05); opacity: 0; }
         }
 
+        /* Navigation & UI */
         #menu-trigger {
             position: fixed; top: 20px; left: 20px; width: 44px; height: 44px;
             background: var(--input-bg); backdrop-filter: blur(10px);
@@ -78,10 +78,9 @@
             display: flex; align-items: center; justify-content: center;
             border: 1px solid var(--border-glass); cursor: pointer;
         }
-
         #menu-trigger span, #menu-trigger span::before, #menu-trigger span::after {
             content: ''; display: block; width: 20px; height: 2px;
-            background: var(--text-main); position: absolute; transition: 0.3s;
+            background: var(--text-main); position: absolute;
         }
         #menu-trigger span::before { top: -6px; }
         #menu-trigger span::after { bottom: -6px; }
@@ -89,80 +88,62 @@
         #menu-drawer {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
             background: var(--drawer-bg); z-index: 9995;
-            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 40px 20px; backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border-glass);
+            transition: left 0.3s ease-out; padding: 40px 20px;
+            backdrop-filter: blur(20px); border-right: 1px solid var(--border-glass);
         }
         #menu-drawer.open { left: 0; }
 
         #menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 9994;
-            display: none; backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.5); z-index: 9994; display: none;
         }
         #menu-overlay.open { display: block; }
 
-        .nav-view {
-            width: 100%; max-width: 900px; text-align: center;
-            padding: 100px 20px 40px; /* Space for menu trigger */
-        }
-
+        .nav-view { width: 100%; max-width: 900px; text-align: center; padding: 100px 20px 40px; }
         .hidden { display: none !important; }
 
-        /* Grid - Desktop Optimized */
-        .selection-grid { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin-top: 40px; }
+        .selection-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 30px; }
         .selection-card {
             background: var(--glass-card); border: 2px solid var(--border-glass);
-            border-radius: 50px; width: 280px; height: 350px;
-            overflow: hidden; cursor: pointer; transition: 0.4s;
-            position: relative; box-shadow: var(--shadow);
+            border-radius: 40px; width: 260px; height: 320px;
+            overflow: hidden; cursor: pointer; transition: 0.3s; box-shadow: var(--shadow);
         }
-        .selection-card:hover { border-color: var(--pulp-lime); transform: translateY(-10px); }
-        .selection-card img { width: 100%; height: 80%; object-fit: cover; }
-        .card-label { height: 20%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
+        .selection-card:hover { border-color: var(--pulp-lime); transform: translateY(-5px); }
+        .selection-card img { width: 100%; height: 75%; object-fit: cover; }
+        .card-label { height: 25%; display: flex; align-items: center; justify-content: center; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
 
-        .list-container { display: flex; flex-direction: column; gap: 20px; max-width: 450px; margin: 40px auto; }
-        .list-btn {
-            background: var(--glass-card); border: 1px solid var(--border-glass);
-            padding: 25px; border-radius: 25px; cursor: pointer;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* App Layout - Responsive */
-        .app-container { display: none; flex-direction: column; gap: 40px; width: 100%; max-width: 450px; padding-top: 100px; }
+        /* App Interface */
+        .app-container { display: none; flex-direction: column; gap: 30px; width: 100%; max-width: 450px; padding-top: 80px; }
         .app-card {
-            background: var(--glass-card); padding: 3rem 2rem; border-radius: 60px;
+            background: var(--glass-card); padding: 2.5rem 1.5rem; border-radius: 50px;
             border: 1px solid var(--border-glass); text-align: center; box-shadow: var(--shadow);
         }
-
         .input-wrapper {
             background: var(--input-bg); border: 2px solid rgba(166, 226, 46, 0.2);
-            border-radius: 30px; padding: 20px; margin-bottom: 30px;
+            border-radius: 25px; padding: 15px; margin-bottom: 20px;
         }
         input {
             background: transparent; border: none; color: #fff;
-            font-size: 3.5rem; font-weight: 900; text-align: center;
-            width: 100%; outline: none; letter-spacing: 10px; text-transform: uppercase;
+            font-size: 3rem; font-weight: 900; text-align: center;
+            width: 100%; outline: none; letter-spacing: 10px;
         }
-
         .btn-main {
             background: linear-gradient(135deg, var(--pulp-amber), #ff4500);
-            color: #fff; border: none; padding: 20px; border-radius: 100px;
-            width: 100%; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
+            color: #fff; border: none; padding: 18px; border-radius: 100px;
+            width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer;
         }
 
-        .result-display { margin-top: 30px; padding: 30px; border-radius: 40px; background: var(--input-bg); border: 1px solid var(--border-glass); }
+        .result-display { margin-top: 25px; padding: 25px; border-radius: 35px; background: var(--input-bg); border: 1px solid var(--border-glass); }
         .bg-perfect { border-color: var(--pulp-lime); color: var(--pulp-lime); }
         .bg-acceptable { border-color: var(--pulp-amber); color: var(--pulp-amber); }
         .bg-old { border-color: var(--pulp-red); color: var(--pulp-red); }
 
-        .history-section { margin-top: 40px; width: 100%; }
-        .log-item { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid var(--border-glass); cursor: pointer; }
+        .history-section { margin-top: 30px; width: 100%; }
+        .log-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border-glass); cursor: pointer; }
 
-        /* Desktop View Refinement */
         @media (min-width: 992px) {
-            .app-container { flex-direction: row; max-width: 1000px; align-items: flex-start; justify-content: center; }
-            .history-section { max-width: 400px; background: var(--glass-card); border-radius: 40px; padding: 20px; border: 1px solid var(--border-glass); }
+            .app-container { flex-direction: row; max-width: 950px; align-items: flex-start; justify-content: center; }
+            .history-section { max-width: 380px; background: var(--glass-card); border-radius: 40px; padding: 20px; border: 1px solid var(--border-glass); }
         }
     </style>
 </head>
@@ -173,59 +154,52 @@
     <div id="menu-trigger" onclick="toggleMenu()"><span></span></div>
     <div id="menu-overlay" onclick="toggleMenu()"></div>
     <div id="menu-drawer">
-        <div style="text-align:center; margin-bottom:50px;"><img src="edited-image.png" style="width:60px;"></div>
-        <div class="list-btn" style="margin-bottom:15px;" onclick="showHub(); toggleMenu();">🏠 Home</div>
-        <div class="list-btn" onclick="clearHistory();" style="color:var(--pulp-red);">⚠️ Clear Logs</div>
+        <div class="list-btn" style="margin-bottom:15px; padding:20px; background:var(--input-bg); border-radius:15px; text-align:center; cursor:pointer;" onclick="showHub(); toggleMenu();">🏠 Home</div>
+        <div class="list-btn" style="color:var(--pulp-red); padding:20px; text-align:center; cursor:pointer;" onclick="clearHistory();">⚠️ Clear Logs</div>
     </div>
 
-    <!-- MAIN HUB -->
+    <!-- HUB -->
     <div id="fruit-hub" class="nav-view">
-        <h1 style="font-weight:900; color:var(--pulp-lime); letter-spacing:5px;">PULP PRO</h1>
+        <h1 style="font-weight:900; color:var(--pulp-lime); letter-spacing:4px;">PULP PRO</h1>
         <div class="selection-grid">
-            <div class="selection-card" onclick="openMiddleHub('banana')">
-                <img src="banana.png"><div class="card-label">Banana</div>
-            </div>
-            <div class="selection-card" style="opacity:0.5; cursor:not-allowed;">
-                <img src="mango.png"><div class="card-label">Mango (Soon)</div>
-            </div>
+            <div class="selection-card" onclick="openMiddleHub('banana')"><img src="banana.png"><div class="card-label">Banana</div></div>
+            <div class="selection-card" style="opacity:0.4;"><img src="mango.png"><div class="card-label">Mango</div></div>
         </div>
     </div>
 
     <!-- MIDDLE HUB -->
     <div id="middle-hub" class="nav-view hidden">
         <h2 id="middleTitle" style="font-weight:900; color:var(--pulp-lime);">BANANA HUB</h2>
-        <div class="list-container">
-            <div class="list-btn" onclick="openBrands()">Brands</div>
-            <div class="list-btn disabled">Common Defects</div>
+        <div style="max-width:400px; margin: 30px auto;">
+            <div class="btn-main" style="margin-bottom:15px; background:var(--glass-card); border:1px solid var(--border-glass);" onclick="openBrands()">Brands</div>
+            <button class="btn-main" style="background:transparent; border:none; opacity:0.6;" onclick="showHub()">← Back</button>
         </div>
-        <button class="btn-main" style="background:transparent; border:1px solid var(--border-glass); color:white;" onclick="showHub()">← Back</button>
     </div>
 
-    <!-- BRANDS HUB -->
+    <!-- BRANDS -->
     <div id="brand-hub" class="nav-view hidden">
         <h2 style="font-weight:900; color:var(--pulp-lime);">SELECT BRAND</h2>
-        <div class="list-container">
-            <div class="list-btn" onclick="openCalc('Chiquita')">Chiquita</div>
-            <div class="list-btn disabled">Fyffes (Soon)</div>
+        <div style="max-width:400px; margin: 30px auto;">
+            <div class="btn-main" style="margin-bottom:15px; background:var(--glass-card); border:1px solid var(--border-glass);" onclick="openCalc('Chiquita')">Chiquita</div>
+            <button class="btn-main" style="background:transparent; border:none; opacity:0.6;" onclick="openMiddleHub('banana')">← Back</button>
         </div>
-        <button class="btn-main" style="background:transparent; border:1px solid var(--border-glass); color:white;" onclick="openMiddleHub('banana')">← Back</button>
     </div>
 
     <!-- CALCULATOR -->
     <div id="appInterface" class="app-container">
         <div class="app-card">
-            <h3 id="activeBrandName" style="font-weight:900; color:var(--pulp-lime); letter-spacing:4px;">CHIQUITA</h3>
+            <h3 id="activeBrandName" style="font-weight:900; color:var(--pulp-lime);">CHIQUITA</h3>
             <div class="input-wrapper"><input type="text" id="codeIn" maxlength="3" placeholder="---" autofocus spellcheck="false"></div>
-            <button class="btn-main" onclick="checkFruit()">Analyze Code</button>
+            <button class="btn-main" onclick="checkFruit()">Analyze</button>
             <div id="resBox" class="result-display hidden">
-                <div id="statusLabel" style="font-weight:900; font-size:0.8rem;">READY</div>
-                <div id="daysValue" style="font-size:6rem; font-weight:900; line-height:1;">--</div>
-                <div id="dateText" style="font-weight:700; opacity:0.8;">-- -- ----</div>
+                <div id="statusLabel" style="font-weight:900; font-size:0.7rem;">READY</div>
+                <div id="daysValue" style="font-size:5.5rem; font-weight:900; line-height:1;">--</div>
+                <div id="dateText" style="font-weight:700;">-- -- ----</div>
             </div>
-            <button class="btn-main" style="margin-top:30px; background:transparent; border:none; opacity:0.3; font-size:0.7rem; color:white;" onclick="openBrands()">← Switch Brand</button>
+            <button class="btn-main" style="margin-top:20px; background:transparent; border:none; opacity:0.4; font-size:0.7rem; color:white;" onclick="openBrands()">← Switch Brand</button>
         </div>
-        <div class="history-section" id="histSection">
-            <div style="font-weight:900; color:var(--pulp-lime); margin-bottom:15px; border-bottom:1px solid var(--border-glass); padding-bottom:10px;">RECENT SCANS</div>
+        <div class="history-section">
+            <div style="font-weight:900; color:var(--pulp-lime); margin-bottom:15px; border-bottom:1px solid var(--border-glass); padding-bottom:10px;">RECENT</div>
             <div id="historyList"></div>
         </div>
     </div>
@@ -233,22 +207,19 @@
     <script>
         let scanHistory = JSON.parse(localStorage.getItem('pulpProHistory')) || [];
 
-        // DESKTOP SAFETY: Force show app after 3.5 seconds even if window.load is weird
-        function removeSplash() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.visibility = 'hidden'; splash.style.display = 'none'; }, 1000);
+        // IMMEDIATE KILL-SWITCH FOR SPLASH
+        function killSplash() {
+            const s = document.getElementById('splash-screen');
+            if(s) {
+                s.style.opacity = '0';
+                setTimeout(() => { s.style.display = 'none'; }, 600);
             }
         }
 
-        window.addEventListener('load', () => {
-            setTimeout(removeSplash, 2500);
-            renderHistory();
-        });
-
-        // Fail-safe for Desktop Chrome
-        setTimeout(removeSplash, 4000);
+        // Try killing splash at multiple intervals for desktop safety
+        window.addEventListener('load', () => { setTimeout(killSplash, 2200); renderHistory(); });
+        setTimeout(killSplash, 3500); // Fail-safe 1
+        setTimeout(killSplash, 5000); // Fail-safe 2
 
         function toggleMenu() {
             document.getElementById('menu-drawer').classList.toggle('open');
@@ -285,11 +256,10 @@
             const mChar = val.charCodeAt(0), dChar = val.charCodeAt(1), yDigit = val.charAt(2);
             const isValid = (mChar >= 65 && mChar <= 76) && (dChar >= 65 && dChar <= 90) && (yDigit === '1' || yDigit === '2');
 
-            if (!isValid) return alert("Invalid Format");
+            if (!isValid) return;
 
             const now = new Date(), m = mChar - 65;
             let d = dChar - 64; if (yDigit === '2') d += 26;
-
             let hDate = new Date(now.getFullYear(), m, d);
             if (hDate > now) hDate.setFullYear(now.getFullYear() - 1);
             const diff = Math.floor((now - hDate) / (1000*60*60*24));
@@ -317,13 +287,13 @@
             list.innerHTML = scanHistory.map(item => `
                 <div class="log-item" onclick="checkFruit('${item.code}')">
                     <b style="color:var(--pulp-lime); font-family:monospace;">${item.code}</b>
-                    <span>${item.days} DAYS OLD</span>
+                    <span>${item.days}D</span>
                 </div>
             `).join('');
         }
 
         function clearHistory() {
-            if(confirm("Wipe scan logs?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); }
+            if(confirm("Wipe logs?")) { scanHistory = []; localStorage.removeItem('pulpProHistory'); renderHistory(); }
         }
     </script>
 </body>
